@@ -24,6 +24,16 @@ This will pull the PostgreSQL and create a container called direct_evolution_db.
 
 This will run Flask normally, and the backend will connect to the Docker automatically. 
 
+If you would like to access using a GUI such as PgAdmin then use the following connection settings:
+
+```
+Host: localhost
+Port: 5432
+Database: direct_evolution
+User: sierra
+Password: sierra
+```
+
 5. To stop the database, in your terminal you can run:
 
 ``` docker compose down```
