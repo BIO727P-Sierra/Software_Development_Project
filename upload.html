@@ -13,28 +13,44 @@
 
 </form>
 
+
 <hr>
 
-{% if feedback %}
-    {% if feedback.success %}
-        <h2>Upload Successful</h2>
+{% if fasta_feedback %}
 
-        <p>Plasmid Sequence Length: {{ feedback.sequence_length }}</p>
-        <p>Rows Parsed: {{ feedback.rows_parsed }}</p>
-        <p>Rows Rejected: {{ feedback.rows_rejected }}</p>
+    {% if fasta_feedback.success %}
+        <h2 style="color: green;">Plasmid FASTA File Upload Successful</h2>
+        <p><strong>Plasmid Sequence Length:</strong> {{ fasta_feedback.sequence_length }}</p>
+    {% else %}
+        <h2 style="color: red;">FASTA Error</h2>
+        <p>{{ fasta_feedback.message }}</p>
+    {% endif %}
 
-        {% if feedback.rejection_details %}
+{% endif %}
+
+<hr>
+
+{% if experiment_feedback %}
+
+    {% if experiment_feedback.success %}
+        <h2 style="color: green;">Experiment Data Upload Successful</h2>
+        <p><strong>Rows Parsed:</strong>{{ experiment_feedback.rows_parsed }}</p>
+        <p><strong>Rows Rejected:</strong>{{ experiment_feedback.rows_rejected }}</p>
+
+        {% if experiment_feedback.rejection_details %}
             <h3>Rejected Records</h3>
             <ul>
-                {% for r in feedback.rejection_details %}
+                {% for r in experiment_feedback.rejection_details %}
                     <li>{{ r.reason }}</li>
                 {% endfor %}
             </ul>
-        {% endif %}
 
+        {% endif %}
+        
     {% else %}
-        <h2>Error</h2>
-        <p>{{ feedback.error }}</p>
+        <h2 style="color: red;">Experiment Data Upload Error</h2>
+        <p>{{ experimeny_feedback.error }}</p>
+
     {% endif %} 
     
 {% endif %}
