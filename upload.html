@@ -1,0 +1,40 @@
+<h1>Upload Sequence and Experiment Data</h1>
+
+<form method="POST" enctype="multipart/form-data">
+
+    <p> Please Upload Plasmid Sequence File (.fasta .fna or .fa)</p>
+    <input type="file" name="fasta_file" required>
+
+    <p> Please Upload Experiment File (.json or .tsv)</p>
+    <input type="file" name="experiment_file" required>
+
+    <br><br>
+    <button type="submit">Upload</button>
+
+</form>
+
+<hr>
+
+{% if feedback %}
+    {% if feedback.success %}
+        <h2>Upload Successful</h2>
+
+        <p>Plasmid Sequence Length: {{ feedback.sequence_length }}</p>
+        <p>Rows Parsed: {{ feedback.rows_parsed }}</p>
+        <p>Rows Rejected: {{ feedback.rows_rejected }}</p>
+
+        {% if feedback.rejection_details %}
+            <h3>Rejected Records</h3>
+            <ul>
+                {% for r in feedback.rejection_details %}
+                    <li>{{ r.reason }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    {% else %}
+        <h2>Error</h2>
+        <p>{{ feedback.error }}</p>
+    {% endif %} 
+    
+{% endif %}
