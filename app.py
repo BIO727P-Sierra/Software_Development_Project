@@ -14,7 +14,7 @@ from FASTA_parsing_logic import parse_file as parse_fasta
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
 
-# Upload directories for storage
+# Upload direc  tories for storage
 PLASMID_UPLOAD_DIR = Path("uploads/plasmids")
 EXPERIMENT_DATA_UPLOAD_DIR = Path("uploads/experiments")
 
@@ -33,8 +33,8 @@ def allowed_file(filename, allowed_extensions):
 
 def upload_file():
     # Creating sessions so that the page can be refreshed
-    fasta_feedback = session.pop("fasta_feedback",None)
-    experiment_feedback = session.pop("experiment_feedback", None)
+    fasta_feedback = None
+    experiment_feedback = None
 
     if request.method == "POST":
 
@@ -47,7 +47,7 @@ def upload_file():
                 raise ValueError("No FASTA file detected.")
             
             if not allowed_file(fasta_file.filename, fasta_ext):
-                raise ValueError("File type not allowed, please uplaod a FASTA file")
+                raise ValueError("File type not allowed, please upload a FASTA file")
             
             fasta_name = secure_filename(fasta_file.filename)
             fasta_extension = fasta_name.rsplit(".", 1)[1].lower()
@@ -100,16 +100,18 @@ def upload_file():
 
         except Exception as e:
             experiment_feedback = error_feedback(e)
-        
-        session["fasta_feedback"] = fasta_feedback
-        session["experiment_feedback"] = experiment_feedback
-        
-        return redirect(url_for("upload_file"))
+        return render_template(
+            "upload.html", 
+            fasta_feedback = fasta_feedback,
+            experiment_feedback = experiment_feedback
+        )
+
 
     return render_template(
         "upload.html", 
         fasta_feedback = fasta_feedback,
-        experiment_feedback = experiment_feedback)
+        experiment_feedback = experiment_feedback
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
