@@ -14,7 +14,7 @@ from FASTA_parsing_logic import parse_file as parse_fasta
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
 
-# Upload direc  tories for storage
+# Upload directories for storage
 PLASMID_UPLOAD_DIR = Path("uploads/plasmids")
 EXPERIMENT_DATA_UPLOAD_DIR = Path("uploads/experiments")
 
