@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from flask import Flask, render_template, request, redirect, flash, url_for, session 
+from flask import Blueprint, render_template, request, redirect, flash, url_for, session 
 from werkzeug.utils import secure_filename
 from pathlib import Path 
 
@@ -11,8 +11,7 @@ from qc import validate_data
 from feedback import build_feedback, error_feedback
 from FASTA_parsing_logic import parse_file as parse_fasta
 
-app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev_secret_key")
+bp = Blueprint("upload", __name__, url_prefix="/upload")
 
 # Upload directories for storage
 PLASMID_UPLOAD_DIR = Path("uploads/plasmids")
@@ -100,15 +99,9 @@ def upload_file():
 
         except Exception as e:
             experiment_feedback = error_feedback(e)
-        return render_template(
-            "upload.html", 
-            fasta_feedback = fasta_feedback,
-            experiment_feedback = experiment_feedback
-        )
-
 
     return render_template(
-        "upload.html", 
+        "upload/upload.html", 
         fasta_feedback = fasta_feedback,
         experiment_feedback = experiment_feedback
     )
