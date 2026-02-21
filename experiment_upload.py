@@ -40,7 +40,11 @@ def experiment_upload():
             if not experiment_file or experiment_file.filename == "":
                 raise ValueError("No file detected.")
             
-            parsed_data = parse_data(experiment_file)
+            filename = secure_filename(experiment_file.filename)
+            file_path = EXPERIMENT_DATA_UPLOAD_DIR / filename
+            experiment_file.save(file_path)
+
+            parsed_data = parse_data(file_path)
             valid_records, rejected_records = validate_data(parsed_data)
 
             experiment_feedback = build_feedback(valid_records, rejected_records)
