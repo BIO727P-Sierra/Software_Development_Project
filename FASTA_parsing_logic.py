@@ -38,18 +38,29 @@ def parse_file(fasta_file: Path) -> str:
     return plasmid_sequence
 
 def validate_protein(plasmid_sequence, aminoacid_sequence):
-    circular_seq = plasmid_sequence + plasmid_sequence
+    plasmid_sequence = plasmid_sequence.upper().replace("\n","").replace(" ", "")
+    aminoacid_sequence = aminoacid_sequence.upper().replace("\n","").replace(" ", "")
 
+    circular_seq = plasmid_sequence + plasmid_sequence
     seq_obj = Seq(circular_seq)
 
-    for frame in range(3):
-        translated = str(seq_obj[frame:].translate(to_stop=False))
+    def translate_frames(dna_seq):
+        results = []
+        for frame in range(3):
+            trimmed = dna_seq[frame:]
+            trim_length = len(trimmed) - (len(trimmed) % 3)
+            trimmed = trimmed[:trim_length]
+            translated = str(Seq(trimmed).translate(to_stop=False))
+            translated = translated.rstrip("*")
+            results.append(translated)
+        return results
+    
+    for translated in translate_frames(seq_obj):
         if aminoacid_sequence in translated:
             return True
         
     reverse_seq = seq_obj.reverse_complement()
-    for frame in range(3):
-        translated = str(reverse_seq[frame:].translate(to_stop=False))
+    for translated in translate_frames(reverse_seq):
         if aminoacid_sequence in translated:
             return True
         
