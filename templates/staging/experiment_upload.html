@@ -29,6 +29,11 @@
                 </ul>
             {% endif %}
         </div>
+
+        <form method="post" 
+        action="{{ url_for('analysis.run_step1_experiment', experiment_id=experiment_id) }}">
+            <button type="submit">Run Step 1 Analysis</button>
+        </form>
         
     {% else %}
         <div style="color:red;">
@@ -38,3 +43,4 @@
     {% endif %} 
     
 {% endif %}
+
