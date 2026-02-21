@@ -1,0 +1,68 @@
+
+#Importing relevant packages
+import os 
+from flask import Flask 
+from flask_login import LoginManager
+from flask_login import UserMixin
+from .db import get_db
+
+
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
+
+#Basic Configuration:
+    app.config.from_mapping(
+        SECRET_KEY= "dev",
+        DATABASE_URL=os.environ.get("DATABASE_URL"),
+    )
+
+    if test_config is not None:
+        app.config.update(test_config)
+    
+#Registering the Database:
+    from . import db 
+    db.init_app(app)
+
+#Flask Login:
+
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login" #Where it sends user if not logged in
+    login_manager.init_app(app)
+
+#Imports User class from auth (after app exists):
+    from .auth import User
+
+    @login_manager.user_loader
+    def load_user(user_id: str):
+        db = get_db()
+        with db.cursor() as cur:
+            cur.execute("SELECT id, email FROM users WHERE id =%s", (user_id,))
+            row = cur.fetchone()
+        return User(row["id"], row["email"]) if row else None
+
+#Registering the Blueprints:
+    from . import auth
+    app.register_blueprint(auth.bp)
+
+    from . import home
+    app.register_blueprint(home.bp)
+
+    return app
+
+################################################################
+# this is where staging route will be
+############
+
+
+### orf starts here
+
+#Registering the Blueprint for ORF step
+   # from . import orf
+    #app.register_blueprint(orf.bp)
+
+    #return app
+
+#################################################################
+
+#What does this file do?
+# create_app() creates the Flask app, loads config, registers the db, registers the blueprints

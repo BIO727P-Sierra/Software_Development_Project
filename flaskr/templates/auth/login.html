@@ -1,0 +1,20 @@
+<!doctype html>
+<title>Login</title>
+
+<h1>Login</h1>
+
+{% for message in get_flashed_messages() %}
+  <p style="color:red;">{{ message }}</p>
+{% endfor %}
+
+<form method="post">
+  <label>Email</label>
+  <input name="email" required>
+
+  <label>Password</label>
+  <input name="password" type="password" required>
+
+  <button type="submit">Login</button>
+</form>
+
+<p><a href="{{ url_for('home.index') }}">Back to home</a></p>
