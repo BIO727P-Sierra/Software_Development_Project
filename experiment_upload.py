@@ -25,11 +25,13 @@ def allowed_file(filename, allowed_extensions):
 # Upload page
 @bp.route("/", methods=["GET", "POST"])
 def experiment_upload():
-    # Creating sessions so that the page can be refreshed
-    experiment_feedback = None
-
     if not session.get("validated"):
         return redirect(url_for("FASTA_upload.plasmid_upload"))
+
+    experiment_feedback = None
+    # To get the existing experiment_id created from a previous sessison
+    # To test, change this to a random id 
+    experiment_id = session.get("experiment_id")
 
     if request.method == "POST":
 
@@ -60,8 +62,3 @@ def experiment_upload():
         experiment_feedback = experiment_feedback
     )
 
-@bp.route("/staging")
-def experiment_staging():
-    if not session.get("validated"):
-        return redirect(url_for("FASTA_upload.plasmid_upload"))
-    return render_template("staging/experiment_upload.html")
