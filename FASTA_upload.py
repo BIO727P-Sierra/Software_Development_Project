@@ -34,6 +34,11 @@ def plasmid_upload():
         fasta_file = request.files.get("fasta_file")
         aminoacid_sequence = session.get("aminoacid_sequence")
 
+        # -------------------------
+        # If testing without UniProt data, change aminoacid_sequence to a string of amino acids that matches the file you upload
+        # E.g if using the example  data FASTA, change this variable to "WRMGRAL*RR" as these are the translated bases
+        # -------------------------
+
         try:
             # Upload FASTA
             if not fasta_file or fasta_file.filename == "":
@@ -82,4 +87,5 @@ def experiment_upload():
     if not session.get("validated"):
         return redirect(url_for("FASTA_upload.plasmid_upload"))
     return render_template("experiment_upload.html")
+
 
