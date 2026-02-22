@@ -34,8 +34,8 @@ def create_app(test_config=None):
 
     @login_manager.user_loader
     def load_user(user_id: str):
-        db = get_db()
-        with db.cursor() as cur:
+        db_conn = get_db()
+        with db_conn.cursor() as cur:
             cur.execute("SELECT id, email FROM users WHERE id =%s", (user_id,))
             row = cur.fetchone()
         return User(row["id"], row["email"]) if row else None
