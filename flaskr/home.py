@@ -1,8 +1,24 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
+
+### Adding a protected dashboard route to confirm login sesssions persists. ###
+### Users can only see + modify their own experiments ### 
+
+from flask_login import login_required, current_user
 
 bp = Blueprint("home", __name__)
 
 @bp.route("/")
 def index():
+    ### When User logs in, they will be redirected to the dashboard ###
+    if current_user.is_authenticated:
+        return redirect(url_for("home.dashboard"))
     return render_template("home/index.html")
+
+@bp.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("home/dashboard.html", user=current_user)
+
+
+
 
