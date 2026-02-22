@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>Uniprot Protein Data</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+		h1 {
+		text-align: center;
+		}
+
+		h2 {
+		font-size: 15px;   
+		font-weight: bold;
+		}
+
+        pre {
+            background: #f8f8f8;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+		.table-container {
+		max-height: 250px;    /* Limit vertical height */
+		overflow-y: auto;     /* Shows vertical scrollbar when needed */
+		border: 1px solid #ddd; 
+		margin-top: 10px;
+		}
+
+		.button-link {
+    	text-decoration: none;
+		}
+
+		.button-link button {
+			padding: 10px 18px;
+			margin: 6px;
+			font-size: 16px;
+			font-weight: bold;
+			background-color: #007BFF;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		.button-link button:hover {
+			background-color: #0056b3;
+		}
+		
+		.button-container {
+			text-align: center; /* centers contents */
+			margin-top: 20px;
+		}
+
+		.button-container button {
+			padding: 10px 18px;
+			margin: 0 10px; /* spacing between buttons */
+			font-size: 16px;
+			background-color: #007BFF;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		.button-container button:hover {
+			background-color: #0056b3;
+		}
+    </style>
+
+</head>
+<body>
+    <h1>UniProt Protein Data</h1>
+
+    <h2>UniProt ID</h2>
+    <p>{{ uniprot_id }}</p>
+
+    <h2>FASTA Sequence</h2>
+    <pre>{{ aminoacid_sequence }}</pre>
+
+    <h2>Feature Table</h2>
+	<div class="table-container">
+		<table>
+			<tr>
+				<th>Feature Type</th>
+				<th>Start</th>
+				<th>End</th>
+			</tr>
+			{% for f in features_type_location %}
+			<tr>
+				<td>{{ f.feature_type }}</td>
+				<td>{{ f.start_location }}</td>
+				<td>{{ f.end_location }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+
+    <hr>
+	<div class="button-container">
+		<a class="button-link" href="{{ url_for('uniprot.data_stored') }}">
+			<button type="button">Store Data</button>
+		</a>
+	<a class="button-link" href="{{ url_for('uniprot.uniprot_search') }}">
+    	<button type="button">Go Back</button>
+	</a>
+	</div>
+
+
+</body>
+</html>

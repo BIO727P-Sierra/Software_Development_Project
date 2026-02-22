@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title>Uniprot protein data retrieval</title>
+
+	<style>
+        body {
+            text-align: center; /* horizontally center everything inside body */
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            display: inline-block; /* shrink-wrap the form */
+            margin-top: 200px;      /* spacing */
+        }
+
+        input[type="text"] {
+            width: 250px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            padding: 8px 14px;
+            font-size: 16px;
+        }
+    </style>
+	
+</head>
+<body>
+	<h1>Uniprot protein data retrieval</h1>
+	<form method="POST">
+		{{ form.csrf_token }}
+		{{ form.uniprot_id.label }} {{ form.uniprot_id() }}
+		{{ form.submit() }}
+	</form>
+</body>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<script>
+    {% for message in messages %}
+        alert("{{ message }}");
+    {% endfor %}
+</script>
+{% endif %}
+{% endwith %}
