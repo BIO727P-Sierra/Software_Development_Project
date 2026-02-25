@@ -113,7 +113,7 @@ app = create_app()
 
 ### `requirements.txt`
 
-| Package | Change |
+| Package |
 |---|---|
 | `flask>=3.0` 
 | `psycopg[binary]` 
