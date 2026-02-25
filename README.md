@@ -23,20 +23,20 @@ Final layout after all changes. Files at root level were moved into `app/` as re
 
 ```
 soft/                                  ← project root
-├── docker-compose.yml                 # ★ NEW
+├── docker-compose.yml                 
 ├── Dockerfile                         # ★ NEW
-├── schema.sql                         # ✎ EDITED
+├── schema.sql                         
 ├── wsgi.py                            # ★ NEW
-├── requirements.txt                   # ✎ EDITED
+├── requirements.txt                   
 ├── .env.example                       # ★ NEW
 └── app/
-    ├── __init__.py                    # ✎ EDITED  (merged two branches)
-    ├── auth.py                        # ✎ EDITED (rewritten, psycopg only)
-    ├── db.py                          # ✎ EDITED (psycopg only, no SQLAlchemy)
-    ├── home.py                        # ✎ EDITED  (dashboard route added)
-    ├── uniprot.py                     # ✎ EDITED (ORM replaced with raw SQL)
-    ├── FASTA_upload.py                # ✎ EDITED
-    ├── experiment_upload.py           # ✎ EDITED
+    ├── __init__.py                     
+    ├── auth.py                         
+    ├── db.py                           
+    ├── home.py                         
+    ├── uniprot.py                      
+    ├── FASTA_upload.py                 
+    ├── experiment_upload.py           
     ├── analysis.py                    # → (unchanged)
     ├── sequence_processor.py          # → (unchanged)
     ├── FASTA_parsing_logic.py         # → (unchanged)
@@ -126,7 +126,7 @@ app = create_app()
 
 ---
 
-### `schema.sql` ✎ EDITED
+### `schema.sql` 
 
 One column definition caused every `INSERT` to the `experiments` table to fail.
 
@@ -151,7 +151,7 @@ Two separate `__init__.py` files existed, each representing a different developm
 - Wires up Flask-Login with a psycopg-based `user_loader`
 ---
 
-### `app/db.py` ✎ EDITED
+### `app/db.py` 
 
 `db.py` imported both `psycopg` and `flask_sqlalchemy`, initialising two separate database engines. Different modules expected different DB objects, causing `RuntimeError` at startup.
 
@@ -162,7 +162,7 @@ Two separate `__init__.py` files existed, each representing a different developm
 
 ---
 
-### `app/auth.py` ✎ EDITED
+### `app/auth.py` 
 
 Rewritten from `auth.py`. Behaviour is identical; only the database layer changes.
 
@@ -182,7 +182,7 @@ The original `home.py` had only a bare `index` route. `home.py` had the correct 
 
 ---
 
-### `app/uniprot.py` ✎ EDITED
+### `app/uniprot.py`
 
 #### Problem 1 — `data_stored()` did not write to the database
 
@@ -214,7 +214,7 @@ The route used `UniprotProtein` and `UniprotFeatures` ORM models, but `SQLAlchem
 
 ---
 
-### `app/FASTA_upload.py` ✎ EDITED
+### `app/FASTA_upload.py`
 
 ```python
 # Before — absolute imports break inside Docker
@@ -234,7 +234,7 @@ from .db import get_db
 
 ---
 
-### `app/experiment_upload.py` ✎ EDITED
+### `app/experiment_upload.py`
 
 ```python
 # Before
@@ -277,7 +277,7 @@ A shared `base.html` was created providing the navigation bar, flash message ren
 
 | # | Bug | Impact | Fix |
 |---|---|---|---|
-| 1 | No `Dockerfile` or app service in `docker-compose.yml` |
+| 1 | No `Dockerfile` or app service in `docker-compose.yml` | App never starts | Created both |
 | 2 | No `wsgi.py` | Gunicorn cannot find the app object | Created `wsgi.py` |
 | 3 | Two `__init__.py` files, neither complete | Blueprints missing| Merged|
 | 4 | SQLAlchemy mixed with psycopg | `RuntimeError` on all ORM DB calls | Removed SQLAlchemy entirely |
