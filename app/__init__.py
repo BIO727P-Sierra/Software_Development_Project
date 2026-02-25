@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from .db import get_db, init_app as db_init_app
 from flask_session import Session
 
+
 def create_app(test_config=None):
     app = Flask(__name__, template_folder="templates")
 
