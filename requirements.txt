@@ -1,0 +1,8 @@
+flask>=3.0
+flask-login
+flask-wtf
+psycopg[binary]
+biopython
+werkzeug
+gunicorn
+requests
