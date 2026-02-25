@@ -1,4 +1,4 @@
-# 🧬 Directed Evolution Portal — Refactoring Changelog
+# 🧬 Directed Evolution Portal — Changelog
 
 > **Scope:** Bring existing codebase to a fully runnable state. No new features introduced — business logic (ORF analysis, UniProt API, QC pipeline) is unchanged.
 
