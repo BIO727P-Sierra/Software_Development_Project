@@ -114,15 +114,15 @@ app = create_app()
 ### `requirements.txt`
 
 | Package |
-|---|---|
-| `flask>=3.0` 
-| `psycopg[binary]` 
-| `biopython` 
-| `werkzeug` 
-| `gunicorn`
-| `flask-login` 
-| `flask-wtf`
-| `requests` 
+|---|
+| `flask>=3.0`|
+| `psycopg[binary]`|
+| `biopython`|
+| `werkzeug` |
+| `gunicorn`|
+| `flask-login`| 
+| `flask-wtf`|
+| `requests`|
 
 ---
 
