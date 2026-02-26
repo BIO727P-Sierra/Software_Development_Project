@@ -48,7 +48,8 @@ CREATE TABLE IF NOT EXISTS variants (
     orf_cds_dna         TEXT,
     orf_protein_sequence TEXT,
 
-    protein_sequence    TEXT NOT NULL DEFAULT '',
+    protein_sequence    TEXT NOT NULL DEFAULT '', 
+    -- This is different to wt_protein_sequence, returned after orf analysis to lead into mutations
     activity_score      REAL,
     mutation_total      INTEGER,
     qc_passed           BOOLEAN DEFAULT TRUE,
