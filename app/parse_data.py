@@ -45,8 +45,12 @@ def load_jsonfile(file_path):
     
     if not isinstance(data, list):
         raise ValueError(f"JSON file must contain records.")
-    
-    return data
+
+    # Attaching row numbers to JSON to help pinpoint what row is being rejected
+    return [
+        {"__row_number__": i + 1, **row}
+        for i, row in enumerate(data)
+    ]
 
 # Load the TSV file
 def load_tsvfile(file_path):
@@ -65,7 +69,9 @@ def load_tsvfile(file_path):
             if missing_columns:
                 raise ValueError(f"TSV is missing required columns: {missing_columns}")
             
-            for row in tsv_reader:
+            # Numbering TSV starting at 2 as row 1 is the header
+            for row_number, row in enumerate(tsv_reader, start=2):
+                row["__row_number__"] = row_number
                 tsv_records.append(row)
 
     except csv.Error as e:
@@ -80,6 +86,7 @@ def normalised_data(records):
     for row in records:
         
         parsed_data = {
+            "row_number": row.get("__row_number__"),
             "plasmid_variant_index": row.get("Plasmid_Variant_Index"),
             "protein_sequence": row.get("Protein_Sequence"),
             "assembled_dna_sequence": row.get("Assembled_DNA_Sequence"),
@@ -107,3 +114,4 @@ def parse_data(file_path):
     data = load_file(file_path)
     
     return normalised_data(data)
+
