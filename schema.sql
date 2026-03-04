@@ -58,9 +58,9 @@ CREATE TABLE IF NOT EXISTS variants (
     metadata            JSONB,
 
     CONSTRAINT fk_variant_experiment
-        FOREIGN KEY (experiment_id) REFERENCES experiments(experiment_id) ON DELETE CASCADE,
-    CONSTRAINT fk_parent_variant
-        FOREIGN KEY (parent_variant_id) REFERENCES variants(variant_id)
+        FOREIGN KEY (experiment_id) REFERENCES experiments(experiment_id) ON DELETE CASCADE
+    -- deleted the following  constraint to avoid errors with a -1 parent plasmid: 
+    -- CONSTRAINT fk_parent_variant FOREIGN KEY (parent_variant_id) REFERENCES variants(variant_id)
 );
 
 CREATE TABLE IF NOT EXISTS measurements (
