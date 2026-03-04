@@ -27,7 +27,9 @@
             <summary>Rejected records ({{ experiment_feedback.rows_rejected }})</summary>
             <ul style="margin-top:0.5rem; font-size:0.85rem; color:#dc2626;">
               {% for r in experiment_feedback.rejection_details %}
-                <li>{{ r.reason }}</li>
+                <li>
+                  <strong>Record {{ r.row_number }}:</strong> {{ r.reason }}
+                </li>
               {% endfor %}
             </ul>
           </details>
