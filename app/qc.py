@@ -12,6 +12,9 @@ def validate_data(records):
     rejected = []
 
     for row in records:
+
+        row_number = row.get("row_number", "Unknown") 
+        
         missing_data = [
             f for f in qc_fields 
             if row.get(f) is None or row.get(f) == ""
@@ -19,6 +22,7 @@ def validate_data(records):
 
         if missing_data:
             rejected.append({ 
+                "row_number": row_number,
                 "record": row,
                 "reason": f"Missing data: {missing_data}"
             })
@@ -26,6 +30,7 @@ def validate_data(records):
 
         if row["dna_yield"] is None:
             rejected.append({
+                "row_number": row_number,
                 "record": row,
                 "reason": "Invalid numeric dna_yield"
             })
@@ -33,4 +38,5 @@ def validate_data(records):
             
         valid.append(row)
     
+
     return valid, rejected
