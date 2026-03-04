@@ -91,7 +91,7 @@ def normalised_data(records):
             "protein_sequence": row.get("Protein_Sequence"),
             "assembled_dna_sequence": row.get("Assembled_DNA_Sequence"),
             "parent_variant_id": row.get("Parent_Plasmid_Variant"),
-            "generation": int(row["Directed_Evolution_Generation"]) if row.get("Directed_Evolution_Generation") else None,  # cast to int
+            "generation": int(row["Directed_Evolution_Generation"]) if row.get("Directed_Evolution_Generation") is not None else None,  # cast to int and fix error
             "dna_yield": float(row["DNA_Quantification_fg"]) if row.get("DNA_Quantification_fg") else None,
             "protein_yield": float(row["Protein_Quantification_pg"]) if row.get("Protein_Quantification_pg") else None  # fixed from fg to pg
         }
@@ -114,4 +114,5 @@ def parse_data(file_path):
     data = load_file(file_path)
     
     return normalised_data(data)
+
 
