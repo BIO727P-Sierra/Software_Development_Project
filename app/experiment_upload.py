@@ -55,7 +55,12 @@ def insert_variants(db, experiment_id, valid_records):
                 result = cur.fetchone()
                 if result:
                     variant_id = result["variant_id"]
-
+                    # Upsert measurements — delete-then-insert keeps it simple
+                    # because measurements has no natural unique key of its own.
+                    cur.execute(
+                        "DELETE FROM measurements WHERE variant_id = %s",
+                        (variant_id,),
+                    )
                     # Insert measurements
                     cur.execute(
                         """
