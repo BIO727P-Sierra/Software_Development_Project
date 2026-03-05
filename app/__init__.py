@@ -2,7 +2,7 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from .db import get_db, init_app as db_init_app
-
+from flask_session import Session
 
 def create_app(test_config=None):
     app = Flask(__name__, template_folder="templates")
@@ -10,6 +10,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret-change-me"),
         DATABASE_URL=os.environ.get("DATABASE_URL"),
+        SESSION_TYPE="filesystem"
     )
 
     if test_config is not None:
@@ -18,6 +19,9 @@ def create_app(test_config=None):
     # ── Database ──────────────────────────────────────────────
     db_init_app(app)
 
+    # ── Initialise session ────────────────────────────────────
+    Session(app)
+    
     # ── Flask-Login ───────────────────────────────────────────
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
