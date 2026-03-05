@@ -48,19 +48,19 @@ CREATE TABLE IF NOT EXISTS variants (
     orf_cds_dna         TEXT,
     orf_protein_sequence TEXT,
 
-    protein_sequence    TEXT NOT NULL DEFAULT '', 
-    -- This is different to wt_protein_sequence, returned after orf analysis to lead into mutations
+    protein_sequence    TEXT NOT NULL DEFAULT '',
     activity_score      REAL,
     mutation_total      INTEGER,
     qc_passed           BOOLEAN DEFAULT TRUE,
-    -- qc_passed could possibly be removed in future if need be 
-    -- qc_reason TEXT, removed as only valid data will be stored
+    qc_reason           TEXT,
     metadata            JSONB,
 
     CONSTRAINT fk_variant_experiment
-        FOREIGN KEY (experiment_id) REFERENCES experiments(experiment_id) ON DELETE CASCADE
-    -- deleted the following  constraint to avoid errors with a -1 parent plasmid: 
-    -- CONSTRAINT fk_parent_variant FOREIGN KEY (parent_variant_id) REFERENCES variants(variant_id)
+        FOREIGN KEY (experiment_id) REFERENCES experiments(experiment_id) ON DELETE CASCADE,
+    CONSTRAINT fk_parent_variant
+        FOREIGN KEY (parent_variant_id) REFERENCES variants(variant_id),
+    CONSTRAINT uq_experiment_variant_index
+        UNIQUE (experiment_id, plasmid_variant_index)
 );
 
 CREATE TABLE IF NOT EXISTS measurements (
