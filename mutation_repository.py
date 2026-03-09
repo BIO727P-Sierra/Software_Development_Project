@@ -4,8 +4,11 @@ def save_variant_mutations(db, variant_id: int, mutation_results: dict):
     This stores the mutation analysis results in the database.
     """
 
-    mutations = mutation_results["mutations"]
-    total = mutation_results["mutation_total"]
+    if "mutations" not in mutation_results:
+        raise ValueError("mutation_results must include 'mutations'")
+
+    mutations = mutation_results["mutations"] or []
+    total = mutation_results.get("mutation_total", len(mutations))
 
     with db.cursor() as cur:
         
