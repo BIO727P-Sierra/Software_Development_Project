@@ -26,16 +26,24 @@ def results_experiment(experiment_id: int):
     with db.cursor() as cur:
         cur.execute(
             """
-            SELECT
-              e.experiment_id,
-              e.experiment_name,
-              e.uniprot_id,
+            SELECT experiment_id, experiment_name, uniprot_id
+            FROM experiments
+            WHERE experiment_id = %s
+            """,
+            (experiment_id,),
+        )
+        exp = cur.fetchone()
 
+        if exp is None:
+            abort(404)
+
+        cur.execute(
+            """
+            SELECT
               v.variant_id,
               v.generation,
               v.plasmid_variant_index,
               v.parent_variant_id,
-
               v.step1_status,
               v.step1_error,
               v.orf_start,
@@ -49,23 +57,13 @@ def results_experiment(experiment_id: int):
               v.orf_cds_dna,
               v.orf_protein_sequence,
               v.mutation_total
-            FROM experiments e
-            JOIN variants v ON v.experiment_id = e.experiment_id
-            WHERE e.experiment_id = %s
+            FROM variants v
+            WHERE v.experiment_id = %s
             ORDER BY v.plasmid_variant_index ASC NULLS LAST
             """,
             (experiment_id,),
         )
         rows = cur.fetchall()
-
-    if not rows:
-        abort(404)
-
-    exp = {
-        "experiment_id": rows[0]["experiment_id"],
-        "experiment_name": rows[0]["experiment_name"],
-        "uniprot_id": rows[0]["uniprot_id"],
-    }
 
     return render_template("analysis/results.html", exp=exp, rows=rows)
 
