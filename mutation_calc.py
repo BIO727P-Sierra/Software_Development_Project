@@ -15,10 +15,15 @@ def run_mutation_analysis(
     mutation_count = 0
 
     # Ensuring the sequences are the same length
-    codon_count = min(len(wt_dna), len(variant_dna)) // 3
+    codon_count = min(
+        len(wt_dna)//3,
+        len(variant_dna)// 3,
+        len(wt_protein),
+        len(variant_protein)
+    )
 
     for i in range(codon_count):
-        wt_codon = wt_dna[i*3:(i+3)*3]
+        wt_codon = wt_dna[i*3:(i+1)*3]
         var_codon = variant_dna[i*3:(i+1)*3]
 
         if wt_codon != var_codon:
@@ -33,7 +38,7 @@ def run_mutation_analysis(
             elif wt_aa == var_aa:
                 mutation_type = "synonymous"
             else:
-                mutation_type = "misense" 
+                mutation_type = "missense"
 
             mutations.append({
                 "position":i+1,
