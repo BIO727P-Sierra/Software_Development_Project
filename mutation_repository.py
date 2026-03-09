@@ -7,10 +7,9 @@ def save_variant_mutations(db, variant_id: int, mutation_results: dict):
     mutations = mutation_results["mutations"]
     total = mutation_results["mutation_total"]
 
-    with db.cursor as cur:
+    with db.cursor() as cur:
         
-        #removing the previous mutation records so they don't show up
-        #as duplicates.
+        #remove previous mutation rows so they don't show up as duplicates.
 
         cur.execute(
             "DELETE FROM mutations WHERE variant_id = %s",
@@ -22,7 +21,7 @@ def save_variant_mutations(db, variant_id: int, mutation_results: dict):
             cur.execute(
                 """
                 INSERT INTO mutations
-                (variant_id, position, wt_residue, mutant_reside, mutant_type)
+                (variant_id, position, wt_residue, mutant_residue, mutation_type)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
                 (
@@ -36,11 +35,11 @@ def save_variant_mutations(db, variant_id: int, mutation_results: dict):
 
             #execute mutation_total in variants table
 
-            cur.execute(
-                """
-                UPDATE variants
-                SET mutation_total = %s
-                WHERE variant_id = %s
-                """,
-                (total, variant_id),
-            )
+        cur.execute(
+             """
+            UPDATE variants
+            SET mutation_total = %s
+            WHERE variant_id = %s
+            """,
+            (total, variant_id),
+        )

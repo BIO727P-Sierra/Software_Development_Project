@@ -85,7 +85,7 @@ def run_step1_experiment(experiment_id: int):
             """
             SELECT wt_protein_sequence, wt_dna_sequence
             FROM experiments
-            WHERE experiment_id is= %s"
+            WHERE experiment_id = %s
             """,
             (experiment_id,),
         )
@@ -149,7 +149,7 @@ def run_step1_experiment(experiment_id: int):
 
        
     db.commit()
-    flash(f"Step 1 complete: {len(variants)} variant(s) processed.")
+    flash(f"Analysis complete: {len(variants)} variant(s) processed.")
     return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
 
 
@@ -228,12 +228,12 @@ def _write_mutations(db, variant_id: int, results: dict) -> None:
 #opening a database cursor 
     with db.cursor() as cur:
 
-        #deleting mutations from previous experiments - this is important so there are new duplicate
+        # remove previous mutations rows for this variant - this is important so there are new duplicate
         #mutation rows 
 
         cur.execute(
             "DELETE FROM mutations WHERE variant_id = %s",
-            (variant_id)
+            (variant_id,)
         )
 
         #inserting new mutation records - this loops through the dict and inserts one row into the mutation 
@@ -259,12 +259,12 @@ def _write_mutations(db, variant_id: int, results: dict) -> None:
                 m["mutation_type"],
             ),
         )
-    #updating mutation_total in variants table
-    cur.execute(
-        """
-        UPDATE variants
-        SET mutation_total = %s
-        WHERE variant_id = %s
-        """,
-        (results["mutation_total"], variant_id)
-    )
+        #updating mutation_total in variants table
+        cur.execute(
+            """
+            UPDATE variants
+            SET mutation_total = %s
+            WHERE variant_id = %s
+            """,
+            (results["mutation_total"], variant_id)
+        )
