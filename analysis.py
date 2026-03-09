@@ -10,6 +10,7 @@ bp = Blueprint("analysis", __name__, url_prefix="/analysis")
 from .mutation_calc import run_mutation_analysis
 
 from .mutation_repository import save_variant_mutations
+from .activity_score import calculate_scores_for_experiment
 
 
 # -----------------------------
@@ -153,7 +154,16 @@ def run_step1_experiment(experiment_id: int):
 
        
     db.commit()
-    flash(f"Analysis complete: {len(variants)} variant(s) processed.")
+
+    try:
+        scored_count = calculate_scores_for_experiment(db, experiment_id)
+        flash(f"Analysis complete: {len(variants)} variant(s) processed. Activity scored: {scored_count}.")
+    except ValueError as e:
+        flash(
+            f"Analysis complete: {len(variants)} variant(s) processed. "
+            f"Activity scoring skipped: {e}"
+        )
+
     return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
 
 
