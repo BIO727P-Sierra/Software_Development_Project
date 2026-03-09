@@ -7,3 +7,4 @@ werkzeug
 gunicorn
 requests
 email-validator
+flask-session
