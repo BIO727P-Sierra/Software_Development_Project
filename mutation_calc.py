@@ -1,4 +1,4 @@
-#mutation detecting and classifying function
+# mutation detecting and classifying function
 
 def run_mutation_analysis(
         *,
@@ -7,24 +7,23 @@ def run_mutation_analysis(
         wt_dna: str,
         variant_dna: str,
 ) -> dict:
-    
-    #creating an empty list that will contain the mutation data
+    # creating an empty list that will contain the mutation data
     mutations = []
-    
-    #creating a mutation counter
+
+    # creating a mutation counter
     mutation_count = 0
 
     # Ensuring the sequences are the same length
     codon_count = min(
-        len(wt_dna)//3,
-        len(variant_dna)// 3,
+        len(wt_dna) // 3,
+        len(variant_dna) // 3,
         len(wt_protein),
         len(variant_protein)
     )
 
     for i in range(codon_count):
-        wt_codon = wt_dna[i*3:(i+1)*3]
-        var_codon = variant_dna[i*3:(i+1)*3]
+        wt_codon = wt_dna[i * 3:(i + 1) * 3]
+        var_codon = variant_dna[i * 3:(i + 1) * 3]
 
         if wt_codon != var_codon:
 
@@ -41,13 +40,13 @@ def run_mutation_analysis(
                 mutation_type = "missense"
 
             mutations.append({
-                "position":i+1,
+                "position": i + 1,
                 "wt_residue": wt_aa,
                 "mutant_residue": var_aa,
-                "mutation_type" : mutation_type,
+                "mutation_type": mutation_type,
             })
-    
+
     return {
-        "mutation_total":mutation_count,
-        "mutations":mutations,
+        "mutation_total": mutation_count,
+        "mutations": mutations,
     }
