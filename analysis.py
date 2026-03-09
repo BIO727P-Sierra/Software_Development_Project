@@ -104,6 +104,10 @@ def run_step1_experiment(experiment_id: int):
         flash("Staging not complete: missing WT protein sequence.")
         return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
 
+    if not wt_dna:
+        flash("Staging not complete: missing WT DNA sequence.")
+        return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
+
     with db.cursor() as cur:
         cur.execute(
             """
@@ -141,7 +145,7 @@ def run_step1_experiment(experiment_id: int):
                 wt_dna=wt_dna,
                 variant_dna=out["orf_cds_dna"]
             )
-            _write_mutations(
+            save_variant_mutations(
                 db,
                 v["variant_id"],
                 mutation_results
@@ -218,53 +222,3 @@ def _write_step1_result(db, variant_id: int, out: dict) -> None:
             {**out, "variant_id": variant_id},
         )
         
-##Mutation analysis accessory :)
-def _write_mutations(db, variant_id: int, results: dict) -> None:
-    """
-    Persist mutation analysis results into:
-    - mutations table 
-    - variants.mutation_total
-    """
-#opening a database cursor 
-    with db.cursor() as cur:
-
-        # remove previous mutations rows for this variant - this is important so there are new duplicate
-        #mutation rows 
-
-        cur.execute(
-            "DELETE FROM mutations WHERE variant_id = %s",
-            (variant_id,)
-        )
-
-        #inserting new mutation records - this loops through the dict and inserts one row into the mutation 
-        #table
-
-        for m in results["mutations"]:
-            cur.execute(
-                """
-                INSERT INTO mutations (
-                variant_id,
-                position,
-                wt_residue,
-                mutant_residue,
-                mutation_type
-            )
-            VALUES (%s, %s, %s, %s, %s)
-            """,
-            (
-                variant_id,
-                m["position"],
-                m["wt_residue"],
-                m["mutant_residue"],
-                m["mutation_type"],
-            ),
-        )
-        #updating mutation_total in variants table
-        cur.execute(
-            """
-            UPDATE variants
-            SET mutation_total = %s
-            WHERE variant_id = %s
-            """,
-            (results["mutation_total"], variant_id)
-        )
