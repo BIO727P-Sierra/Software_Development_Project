@@ -1,0 +1,69 @@
+site_name: Directed Evolution Portal
+site_description: Documentation for the Directed Evolution Monitoring Portal — track and analyse protein engineering experiments from plasmid upload through ORF analysis.
+site_url: https://your-org.github.io/directed-evolution-portal
+repo_url: https://github.com/your-org/directed-evolution-portal
+repo_name: directed-evolution-portal
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy        # copy button on every code block
+    - content.code.annotate    # enables (1) inline annotations
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      use_pygments: true       # enables full syntax highlighting engine
+      anchor_linenums: true    # makes line numbers linkable (#L10)
+      line_spans: __span       # required for line highlighting (hl_lines)
+      pygments_lang_class: true  # adds language class to code blocks
+  - pymdownx.inlinehilite      # highlights inline `code`
+  - pymdownx.tabbed:
+      alternate_style: true    # required for === "Tab" content tabs
+  - pymdownx.snippets          # enables --8<-- file includes
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - toc:
+      permalink: true
+
+extra_javascript:
+  - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Pipeline:
+    - Overview: pipeline/overview.md
+    - "Step 1: UniProt Search": pipeline/uniprot.md
+    - "Step 2: Plasmid Upload": pipeline/plasmid-upload.md
+    - "Step 3: Experiment Data Upload": pipeline/experiment-upload.md
+    - "Step 4: ORF Analysis": pipeline/orf-analysis.md
+  - Reference:
+    - Database Schema: reference/database-schema.md
+    - File Formats: reference/file-formats.md
