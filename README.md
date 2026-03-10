@@ -113,25 +113,6 @@ docker compose logs -f app  # follow live
 
 ---
 
-## Changelog
-
-> Bring existing codebase to a fully runnable state. No new features — business logic (ORF analysis, UniProt API, QC pipeline) is unchanged.
-
-| # | Bug | Fix |
-|---|---|---|
-| 1 | No `Dockerfile` or app service in `docker-compose.yml` | Created both |
-| 2 | No `wsgi.py` — Gunicorn cannot find the app | Created `wsgi.py` |
-| 3 | Two `__init__.py` files, neither complete | Merged into one |
-| 4 | SQLAlchemy mixed with psycopg | Removed SQLAlchemy entirely; psycopg3 throughout |
-| 5 | `data_stored()` returned a string, never wrote to DB | Rewrote to `INSERT` + redirect; sets `experiment_id` in session |
-| 6 | Absolute imports (`from app.X`) break inside Docker | Changed to relative imports |
-| 7 | `wt_dna_sequence NOT NULL` with no default | Added `DEFAULT ''` to schema |
-| 8 | `uniprot_id` not passed to plasmid template | Added to `render_template()` call |
-| 9 | "Store Data" URL pointed to old route name | Updated to `/store` |
-| 10 | `flask-login`, `flask-wtf`, `requests` missing | Added to `requirements.txt` |
-
----
-
 ## Documentation
 
 Full documentation: **https://your-org.github.io/directed-evolution-portal**
