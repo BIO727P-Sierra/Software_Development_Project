@@ -27,14 +27,13 @@ Results are stored in PostgreSQL and displayed in a results table per experiment
 **Requirements:** [Docker Desktop](https://docs.docker.com/get-docker/) (no local PostgreSQL needed)
 
 ```bash
-git clone https://github.com/your-org/directed-evolution-portal.git
-cd directed-evolution-portal
+git clone https://github.com/BIO727P-Sierra/Software_Development_Project.git
+cd Software_Development_Project
 docker compose up --build
 ```
 
 The app will be available at **http://localhost:8080** once both containers are healthy.
 
-> ⚠️ Change `SECRET_KEY` and database credentials before any production deployment.
 
 ---
 
