@@ -154,8 +154,13 @@ def run_step1_experiment(experiment_id: int):
     db.commit()
 
     try:
-        scored_count = calculate_scores_for_experiment(db, experiment_id)
-        flash(f"Analysis complete: {len(variants)} variant(s) processed. Activity scored: {scored_count}.")
+        score_summary = calculate_scores_for_experiment(db, experiment_id, return_summary=True)
+        flash(
+            f"Analysis complete: {len(variants)} variant(s) processed. "
+            f"Activity scored: {score_summary['scored']}. "
+            f"Controls skipped: {score_summary['controls_skipped']}. "
+            f"Missing-measurement skipped: {score_summary['missing_measurement_skipped']}."
+        )
     except ValueError as e:
         flash(
             f"Analysis complete: {len(variants)} variant(s) processed. "
@@ -230,3 +235,4 @@ def _write_step1_result(db, variant_id: int, out: dict) -> None:
             {**out, "variant_id": variant_id},
         )
         
+
