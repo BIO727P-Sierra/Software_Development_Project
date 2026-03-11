@@ -9,6 +9,8 @@ from flask_login import login_required
 
 from .db import get_db
 
+# This page requires mutations and activity score pages!
+
 # Retrieving variables from the database
 def get_variants():
     
@@ -121,4 +123,5 @@ def landscape():
     return render_template(
         "visualisation/activity_landscape.html",
         plot_html=plot_html
+
     )
