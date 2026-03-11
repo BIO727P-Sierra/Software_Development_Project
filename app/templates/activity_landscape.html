@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}3D Activity Landscape{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:1100px;margin:0 auto;">
+
+    <h2>3d Activity Landscape</h2>
+    <p style="color:#555;">
+        The peaks represent highly active variants.
+        The X and Y axes represent the sequence diversity after PCA dimensionality reduction.  
+    </p>
+
+    <div>
+
+        {{ plot_html | safe }}
+
+    </div>
+
+</div>
+
+{% endblock %}
