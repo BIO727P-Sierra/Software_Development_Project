@@ -8,6 +8,13 @@ import string
 from sklearn.decomposition import PCA
 from scipy.interpolate import griddata
 
+# ------------------------------
+# If you want to run this as a demonstration, make sure all the requirements are installed, and in the terminal paste:
+
+# python TESTactivity_landscape_vis.py
+
+# This will bring up a tab of an example landscape and create a html.
+# (Integration with the rest of the code and database is still in progress)
 
 # Encoding the proteins
 amino_acids = "ARNDCEQGHILKMFPSTWYV" # Letters of aminoacids
@@ -72,5 +79,6 @@ fig.update_layout(
 )
 
 fig.show()
+
 
 fig.write_html("test_fake_activity_landscape")
