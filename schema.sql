@@ -52,13 +52,10 @@ CREATE TABLE IF NOT EXISTS variants (
     activity_score      REAL,
     mutation_total      INTEGER,
     qc_passed           BOOLEAN DEFAULT TRUE,
-    qc_reason           TEXT,
     metadata            JSONB,
 
     CONSTRAINT fk_variant_experiment
         FOREIGN KEY (experiment_id) REFERENCES experiments(experiment_id) ON DELETE CASCADE,
-    CONSTRAINT fk_parent_variant
-        FOREIGN KEY (parent_variant_id) REFERENCES variants(variant_id),
     CONSTRAINT uq_experiment_variant_index
         UNIQUE (experiment_id, plasmid_variant_index)
 );
