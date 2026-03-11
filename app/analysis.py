@@ -152,7 +152,7 @@ def run_step1_experiment(experiment_id: int):
             f"Analysis complete: {len(variants)} variant(s) processed. "
             f"Activity scored: {score_summary['scored']}. "
             f"Controls skipped: {score_summary['controls_skipped']}. "
-            f"Missing-measurement skipped: {score_summary['missing_measurement_skipped']}."
+            f"Missing measurements skipped: {score_summary['missing_measurement_skipped']}."
         )
     except ValueError as e:
         flash(
