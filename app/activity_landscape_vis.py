@@ -119,7 +119,7 @@ def generate_landscape(experiment_id):
             y=df["y"],
             z=df["activity_score"],
             mode="markers",
-            marker=dict(size=2, color=df["activity_score"], colorscale="Viridis", opacity=0.5)
+            marker=dict(size=2, color=df["activity_score"], colorscale="RdBu", opacity=0.5)
         )
     )
 
