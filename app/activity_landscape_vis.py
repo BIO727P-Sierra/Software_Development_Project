@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 from scipy.interpolate import griddata
 from flask import Blueprint, render_template
 from flask_login import login_required
@@ -12,7 +12,7 @@ from .db import get_db
 # This page requires mutations and activity score pages!
 
 # Retrieving variables from the database
-def get_variants():
+def get_variants(experiment_id):
     
     db = get_db()
 
@@ -21,16 +21,20 @@ def get_variants():
             """
             SELECT
                 variant_id,
-                protein_sequence,
+                assembled_dna_sequence AS protein_sequence,
                 activity_score
             FROM variants
-            WHERE activity_score IS NOT NULL
-            """
+            WHERE experiment_id = %s
+            AND activity_score IS NOT NULL
+            """,
+            (experiment_id,)
         )
 
         rows = cur.fetchall()
 
-    df = pd.DataFrame(rows)
+    df = pd.DataFrame(
+        rows,
+        columns=["variant_id", "protein_sequence", "activity_score"])
 
     return df
 
@@ -54,16 +58,16 @@ def encode_sequence(sequence, max_length):
 
     return encoded_proteins
 
-def generate_landscape():
+def generate_landscape(experiment_id):
 
-    df = get_variants()
+    df = get_variants(experiment_id)
 
     if df.empty:
         return "<p>No activity data available.</p>"
     
     # Remove any sequences that may be empty
     df = df[df["protein_sequence"].notna()]
-    df = df[df["protein_sequence"] != ""]
+    df = df[df["protein_sequence"].astype(str).str.len() > 0]
 
     # Error for is all sequences are empty
     if df.empty:
@@ -79,12 +83,11 @@ def generate_landscape():
     if X.shape[1] == 0:
         return "<p>Encoding failed.</p>"
     
-    # PCA reducing dimensionality
-    pca = PCA(n_components = 2)
-    components = pca.fit_transform(X)
+    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
+    components = tsne.fit_transform(X)
 
-    df["x"] = components[:,0]
-    df["y"] = components[:,1]
+    df["x"] = components[:, 0]
+    df["y"] = components[:, 1]
 
     # Creating the grids
     grid_x, grid_y = np.mgrid[df.x.min():df.x.max():100j, df.y.min():df.y.max():100j]
@@ -93,21 +96,41 @@ def generate_landscape():
         (df.x, df.y),
         df.activity_score,
         (grid_x, grid_y),
-        method="linear"
+        method="cubic"
     )
 
     # Creating the plot topographical surface
-    fig = go.Figure(data=[go.Surface(x=grid_x, y=grid_y, z=grid_z)])
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Surface(
+            x=grid_x,
+            y=grid_y,
+            z=grid_z,
+            colorscale="YlOrRd",
+            opacity=0.8
+        )
+    )
+
+    # Activity score scatter points
+    fig.add_trace(
+        go.Scatter3d(
+            x=df["x"],
+            y=df["y"],
+            z=df["activity_score"],
+            mode="markers",
+            marker=dict(size=2, color=df["activity_score"], colorscale="Viridis", opacity=0.5)
+        )
+    )
 
     fig.update_layout(
-        title=dict(
-            text="3D Activity Landscape"), 
-                autosize=False,
-                scene=dict(
-                    xaxis_title = "Sequence Diversity (PC1)",
-                    yaxis_title = "Sequence Diversity (PC2)",
-                    zaxis_title = "Activity Score"
-                )
+        title = "3D Activity Landscape",
+        scene=dict(
+            xaxis_title = "Sequence Diversity (t-SNE 1)",
+            yaxis_title = "Sequence Diversity (t-SNE 2)",
+            zaxis_title = "Activity Score"
+        ),
+        margin=dict(l=0, r=0, b=0, t=40)
     )
 
     return fig.to_html(full_html=False)
@@ -115,13 +138,14 @@ def generate_landscape():
 # Flask route    
 bp = Blueprint("visualisation", __name__, url_prefix="/visualisation")
 
-@bp.route("/landscape")
+@bp.route("/landscape/<int:experiment_id>")
 @login_required
-def landscape():
-    plot_html = generate_landscape()
+def landscape(experiment_id):
+    plot_html = generate_landscape(experiment_id)
 
     return render_template(
         "visualisation/activity_landscape.html",
-        plot_html=plot_html
+        plot_html=plot_html,
+        experiment_id=experiment_id
 
     )
