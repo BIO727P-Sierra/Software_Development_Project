@@ -1,5 +1,5 @@
 # analysis.py
-from flask import Blueprint, render_template, redirect, url_for, flash, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, session
 from .db import get_db
 from .sequence_processor import run_step1_for_variant_row, SelectionPolicy
 
@@ -11,6 +11,7 @@ from .mutation_calc import run_mutation_analysis
 
 from .mutation_repository import save_variant_mutations
 from .activity_score import calculate_scores_for_experiment
+from .top_performer_table import fetch_top_performers
 
 
 # -----------------------------
@@ -66,6 +67,31 @@ def results_experiment(experiment_id: int):
         rows = cur.fetchall()
 
     return render_template("analysis/results.html", exp=exp, rows=rows)
+
+
+@bp.route("/results/experiment/<int:experiment_id>/top-performers", methods=("GET",))
+def top_performers(experiment_id: int):
+    """
+    Top performers table for an experiment based on activity_score.
+    """
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            """
+            SELECT experiment_id, experiment_name, uniprot_id
+            FROM experiments
+            WHERE experiment_id = %s
+            """,
+            (experiment_id,),
+        )
+        exp = cur.fetchone()
+
+        if exp is None:
+            abort(404)
+
+    rows = fetch_top_performers(db, experiment_id, limit=10)
+    summary = session.get("analysis_summary")
+    return render_template("analysis/top_performers.html", exp=exp, rows=rows, summary=summary)
 
 
 # -----------------------------
@@ -155,17 +181,18 @@ def run_step1_experiment(experiment_id: int):
 
     try:
         score_summary = calculate_scores_for_experiment(db, experiment_id, return_summary=True)
-        flash(
-            f"Analysis complete: {len(variants)} variant(s) processed. "
-            f"Activity scored: {score_summary['scored']}. "
-            f"Controls skipped: {score_summary['controls_skipped']}. "
-            f"Missing measurements skipped: {score_summary['missing_measurement_skipped']}."
-        )
+        session["analysis_summary"] = {
+            "processed": len(variants),
+            "scored": score_summary["scored"],
+            "controls_skipped": score_summary["controls_skipped"],
+            "missing_measurements_skipped": score_summary["missing_measurement_skipped"],
+            "low_protein_skipped": score_summary.get("low_protein_skipped", 0),
+        }
     except ValueError as e:
-        flash(
-            f"Analysis complete: {len(variants)} variant(s) processed. "
-            f"Activity scoring skipped: {e}"
-        )
+        session["analysis_summary"] = {
+            "processed": len(variants),
+            "error": str(e),
+        }
 
     return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
 
