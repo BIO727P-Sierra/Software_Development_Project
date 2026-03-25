@@ -16,6 +16,15 @@ optional = [
     "Parent_Plasmid_Variant",
 ]
 
+
+def _as_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    text = str(value).strip().lower()
+    return text in {"1", "true", "t", "yes", "y"}
+
 # Load the file based on extension
 def load_file(file_path):
     
@@ -93,7 +102,10 @@ def normalised_data(records):
             "parent_variant_id": row.get("Parent_Plasmid_Variant"),
             "generation": int(row["Directed_Evolution_Generation"]) if row.get("Directed_Evolution_Generation") is not None else None,  # cast to int and fix error
             "dna_yield": float(row["DNA_Quantification_fg"]) if row.get("DNA_Quantification_fg") else None,
-            "protein_yield": float(row["Protein_Quantification_pg"]) if row.get("Protein_Quantification_pg") else None  # fixed from fg to pg
+            "protein_yield": float(row["Protein_Quantification_pg"]) if row.get("Protein_Quantification_pg") else None,  # fixed from fg to pg
+            "is_control": _as_bool(
+                row.get("Control", row.get("control", row.get("is_control")))
+            ),
         }
                        
         metadata = {
