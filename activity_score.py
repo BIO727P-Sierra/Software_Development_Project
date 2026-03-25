@@ -1,3 +1,5 @@
+# compute a unified activity score, where DNA and protein yields are baseline-corrected
+# clamp yields to stay above 0 and then score as corrected_dna and corrected_protein
 def compute_activity_score(
     dna_yield,
     protein_yield,
@@ -5,23 +7,24 @@ def compute_activity_score(
     protein_baseline,
     epsilon=1e-6,
     max_score=1_000_000.0,
+    min_protein=0.01,
 ):
-    """
-    Compute a unified Activity Score.
 
-    Baseline-correct both DNA and protein yields, clamp negatives to 0,
-    then score as corrected_dna / corrected_protein.
-    """
+    # Validate inputs and prevent divide by zero issues
     if dna_yield is None or protein_yield is None:
         raise ValueError("dna_yield and protein_yield must be present")
 
     corrected_dna = max(float(dna_yield) - float(dna_baseline), 0.0)
     corrected_protein = max(float(protein_yield) - float(protein_baseline), 0.0)
 
+    if corrected_protein < min_protein:
+        return None
+
     score = corrected_dna / max(corrected_protein, epsilon)
     return min(score, max_score)
 
-
+# Find all unique generation numbers for an experiment and sort into ascending order
+# return as a list
 def _load_experiment_generations(cur, experiment_id):
     cur.execute(
         """
@@ -34,7 +37,8 @@ def _load_experiment_generations(cur, experiment_id):
     )
     return [row["generation"] for row in cur.fetchall()]
 
-
+# Run a SQL query to return WT control averages
+# Returns if both are present, otherwise returns None
 def _load_wt_baseline_for_generation(cur, experiment_id, generation):
     def _run_baseline_query(where_sql, params):
         cur.execute(
@@ -54,7 +58,7 @@ def _load_wt_baseline_for_generation(cur, experiment_id, generation):
             return baseline["dna_baseline"], baseline["protein_baseline"]
         return None
 
-    # Preferred: strict WT controls in the same generation.
+    # Best-case baseline where strict WT controls in the same generation
     strict_same_generation = _run_baseline_query(
         """
         v.experiment_id = %s
@@ -72,7 +76,8 @@ def _load_wt_baseline_for_generation(cur, experiment_id, generation):
     if strict_same_generation:
         return strict_same_generation
 
-    # Fallback 1: any control in the same generation.
+    # Fallback 1 if best-case doesn't work
+    # any control in the same generation.
     any_control_same_generation = _run_baseline_query(
         """
         v.experiment_id = %s
@@ -84,7 +89,8 @@ def _load_wt_baseline_for_generation(cur, experiment_id, generation):
     if any_control_same_generation:
         return any_control_same_generation
 
-    # Fallback 2: any control in the experiment.
+    # Final fallback for baselines
+    # use any control samples in the experiment, otherwise raise an error
     any_control_experiment = _run_baseline_query(
         """
         v.experiment_id = %s
@@ -99,7 +105,8 @@ def _load_wt_baseline_for_generation(cur, experiment_id, generation):
         f"Missing control baseline for experiment {experiment_id}, generation {generation}"
     )
 
-
+# Load per-variant measurement averages for one experiment and generation
+# return as a list
 def _load_variant_measurements_for_generation(cur, experiment_id, generation):
     cur.execute(
         """
@@ -121,7 +128,7 @@ def _load_variant_measurements_for_generation(cur, experiment_id, generation):
     )
     return cur.fetchall()
 
-
+# Count how many variants are controls or non-controls in a generation
 def _load_generation_counts(cur, experiment_id, generation):
     cur.execute(
         """
@@ -141,12 +148,15 @@ def _load_generation_counts(cur, experiment_id, generation):
         "control_variants": row.get("control_variants", 0) or 0,
     }
 
-
+# Compute activity score with compute_activity_score and write into database if valid
+# Counts how many were scored or skipped and returns a summary
 def _score_generation(cur, experiment_id, generation):
     dna_baseline, protein_baseline = _load_wt_baseline_for_generation(cur, experiment_id, generation)
     counts = _load_generation_counts(cur, experiment_id, generation)
     variants = _load_variant_measurements_for_generation(cur, experiment_id, generation)
 
+    scored_count = 0
+    low_protein_skipped = 0
     for v in variants:
         score = compute_activity_score(
             dna_yield=v["dna_yield"],
@@ -154,22 +164,27 @@ def _score_generation(cur, experiment_id, generation):
             dna_baseline=dna_baseline,
             protein_baseline=protein_baseline,
         )
-        cur.execute(
-            """
-            UPDATE variants
-            SET activity_score = %s
-            WHERE variant_id = %s
-            """,
-            (score, v["variant_id"]),
-        )
-    scored_count = len(variants)
+        if score is not None:
+            cur.execute(
+                """
+                UPDATE variants
+                SET activity_score = %s
+                WHERE variant_id = %s
+                """,
+                (score, v["variant_id"]),
+            )
+            scored_count += 1
+        else:
+            low_protein_skipped += 1
+
     return {
         "scored": scored_count,
         "controls_skipped": counts["control_variants"],
-        "missing_measurement_skipped": max(counts["non_control_variants"] - scored_count, 0),
+        "missing_measurement_skipped": max(counts["non_control_variants"] - len(variants), 0),
+        "low_protein_skipped": low_protein_skipped,
     }
 
-
+# Calculate activity scores for an experiment and commit into the database
 def calculate_scores_for_experiment(db, experiment_id, generation=None, commit=True, return_summary=False):
     """
     Compute and persist Activity Scores for one experiment.
@@ -185,6 +200,7 @@ def calculate_scores_for_experiment(db, experiment_id, generation=None, commit=T
                 "scored": 0,
                 "controls_skipped": 0,
                 "missing_measurement_skipped": 0,
+                "low_protein_skipped": 0,
             }
             return summary if return_summary else 0
 
@@ -192,12 +208,14 @@ def calculate_scores_for_experiment(db, experiment_id, generation=None, commit=T
             "scored": 0,
             "controls_skipped": 0,
             "missing_measurement_skipped": 0,
+            "low_protein_skipped": 0,
         }
         for gen in generations:
             gen_summary = _score_generation(cur, experiment_id, gen)
             summary["scored"] += gen_summary["scored"]
             summary["controls_skipped"] += gen_summary["controls_skipped"]
             summary["missing_measurement_skipped"] += gen_summary["missing_measurement_skipped"]
+            summary["low_protein_skipped"] += gen_summary["low_protein_skipped"]
 
     if commit:
         db.commit()
