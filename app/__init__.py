@@ -39,7 +39,7 @@ def create_app(test_config=None):
         return User(row["id"], row["email"]) if row else None
 
     # ── Blueprints ────────────────────────────────────────────
-    from . import auth, home, uniprot, FASTA_upload, experiment_upload, analysis
+    from . import auth, home, uniprot, FASTA_upload, experiment_upload, analysis, activity_landscape_vis
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(home.bp)
@@ -47,6 +47,7 @@ def create_app(test_config=None):
     app.register_blueprint(FASTA_upload.bp)
     app.register_blueprint(experiment_upload.bp)
     app.register_blueprint(analysis.bp)
+    app.register_blueprint(activity_landscape_vis.bp)
     
 
     return app
