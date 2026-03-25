@@ -186,12 +186,7 @@ def _score_generation(cur, experiment_id, generation):
 
 # Calculate activity scores for an experiment and commit into the database
 def calculate_scores_for_experiment(db, experiment_id, generation=None, commit=True, return_summary=False):
-    """
-    Compute and persist Activity Scores for one experiment.
 
-    If generation is None, score each generation independently using that
-    generation's WT control baseline.
-    """
     with db.cursor() as cur:
         generations = [generation] if generation is not None else _load_experiment_generations(cur, experiment_id)
 
