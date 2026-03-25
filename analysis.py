@@ -2,20 +2,17 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, session
 from .db import get_db
 from .sequence_processor import run_step1_for_variant_row, SelectionPolicy
+from .mutation_calc import run_mutation_analysis
+from .mutation_repository import save_variant_mutations
+from .activity_score import calculate_scores_for_experiment
+import math
+from .top_performer_table import fetch_top_performers
 
 bp = Blueprint("analysis", __name__, url_prefix="/analysis")
 
 
-#added imports needed for the mutation step 
-from .mutation_calc import run_mutation_analysis
-
-from .mutation_repository import save_variant_mutations
-from .activity_score import calculate_scores_for_experiment
-from .top_performer_table import fetch_top_performers
-
-
 # -----------------------------
-# Results (ONE page per experiment) ##Addition -- adding mutation total add the end of the query    
+# Results (ONE page per experiment)
 # -----------------------------
 @bp.route("/results/experiment/<int:experiment_id>", methods=("GET",))
 def results_experiment(experiment_id: int):
@@ -57,7 +54,8 @@ def results_experiment(experiment_id: int):
               v.orf_protein_len,
               v.orf_cds_dna,
               v.orf_protein_sequence,
-              v.mutation_total
+              v.mutation_total,
+              v.activity_score
             FROM variants v
             WHERE v.experiment_id = %s
             ORDER BY v.plasmid_variant_index ASC NULLS LAST
@@ -90,18 +88,23 @@ def top_performers(experiment_id: int):
             abort(404)
 
     rows = fetch_top_performers(db, experiment_id, limit=10)
+    for r in rows:
+        score = r.get("activity_score")
+        r["activity_score_log"] = math.log10(score + 1) if score is not None else None
     summary = session.get("analysis_summary")
     return render_template("analysis/top_performers.html", exp=exp, rows=rows, summary=summary)
 
 
 # -----------------------------
-# Step 1 — whole experiment
+# Analysis pipeline
 # -----------------------------
 @bp.route("/step1/run_experiment/<int:experiment_id>", methods=("POST",))
 def run_step1_experiment(experiment_id: int):
     """
-    Run Step 1 for ALL variants in an experiment.
-    Writes ORF results back to SQL for each variant, then redirects to results page.
+    Run analysis for ALL variants in an experiment:
+    - Step 1 ORF processing
+    - Mutation analysis and persistence
+    - Activity scoring
     """
     db = get_db()
 
@@ -121,10 +124,8 @@ def run_step1_experiment(experiment_id: int):
         return redirect(url_for("home.index"))
 
     wt_protein = exp_row["wt_protein_sequence"]
-    
-    #new addition
     wt_dna = exp_row["wt_dna_sequence"]
-    
+
     if not wt_protein:
         flash("Staging not complete: missing WT protein sequence.")
         return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
@@ -152,31 +153,27 @@ def run_step1_experiment(experiment_id: int):
     policy = SelectionPolicy()
 
     for v in variants:
-#STEP 1 ORF detection
         out = _run_step1_safe(
             wt_protein,
             v["assembled_dna_sequence"],
-            policy=policy
+            policy=policy,
         )
 
         _write_step1_result(db, v["variant_id"], out)
 
-    #step 2 mutation
         if out["step1_status"] == "ok":
-        
             mutation_results = run_mutation_analysis(
                 wt_protein=wt_protein,
                 variant_protein=out["orf_protein_sequence"],
                 wt_dna=wt_dna,
-                variant_dna=out["orf_cds_dna"]
+                variant_dna=out["orf_cds_dna"],
             )
             save_variant_mutations(
                 db,
                 v["variant_id"],
-                mutation_results
+                mutation_results,
             )
 
-       
     db.commit()
 
     try:
@@ -200,11 +197,10 @@ def run_step1_experiment(experiment_id: int):
 # -----------------------------
 # Internal helpers
 # -----------------------------
-
 def _run_step1_safe(wt_protein: str, assembled_dna: str, policy: SelectionPolicy = None) -> dict:
     """
     Run Step 1 with full error handling. Always returns a dict ready for DB write.
-    Never raises — failures are captured as step1_status = 'error'.
+    Never raises: failures are captured as step1_status = "error".
     """
     if not assembled_dna:
         return _error_out("Missing assembled DNA sequence.")
@@ -245,21 +241,20 @@ def _write_step1_result(db, variant_id: int, out: dict) -> None:
             """
             UPDATE variants
             SET
-              step1_status       = %(step1_status)s,
-              step1_error        = %(step1_error)s,
-              orf_start          = %(orf_start)s,
-              orf_end            = %(orf_end)s,
-              orf_strand         = %(orf_strand)s,
-              orf_frame          = %(orf_frame)s,
-              orf_score          = %(orf_score)s,
-              orf_coverage       = %(orf_coverage)s,
-              orf_final          = %(orf_final)s,
-              orf_protein_len    = %(orf_protein_len)s,
-              orf_cds_dna        = %(orf_cds_dna)s,
+              step1_status         = %(step1_status)s,
+              step1_error          = %(step1_error)s,
+              orf_start            = %(orf_start)s,
+              orf_end              = %(orf_end)s,
+              orf_strand           = %(orf_strand)s,
+              orf_frame            = %(orf_frame)s,
+              orf_score            = %(orf_score)s,
+              orf_coverage         = %(orf_coverage)s,
+              orf_final            = %(orf_final)s,
+              orf_protein_len      = %(orf_protein_len)s,
+              orf_cds_dna          = %(orf_cds_dna)s,
               orf_protein_sequence = %(orf_protein_sequence)s
             WHERE variant_id = %(variant_id)s
             """,
             {**out, "variant_id": variant_id},
         )
-        
 
