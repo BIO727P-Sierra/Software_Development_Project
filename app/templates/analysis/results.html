@@ -9,6 +9,13 @@
     UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank">{{ exp.uniprot_id }}</a>
   </p>
 
+  <div style="margin-bottom:1rem;">
+    <a href="{{ url_for('analysis.top_performers', experiment_id=exp.experiment_id) }}"
+       style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+      View Top 10 Performing Variants
+    </a>
+  </div>
+
   {% if rows %}
   <div style="overflow-x:auto;">
   <table style="width:100%; border-collapse:collapse; background:#fff; font-size:0.83rem;">

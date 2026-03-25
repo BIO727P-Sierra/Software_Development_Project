@@ -21,6 +21,15 @@ def allowed_file(filename, allowed_extensions):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
 
 
+def _as_bool(value):
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    text = str(value).strip().lower()
+    return text in {"1", "true", "t", "yes", "y"}
+
+
 def insert_variants(db, experiment_id, valid_records):
     """Insert validated variant records into the database."""
     inserted = 0
@@ -75,7 +84,7 @@ def insert_variants(db, experiment_id, valid_records):
                             variant_id,
                             float(row["dna_yield"]) if row.get("dna_yield") else None,
                             float(row["protein_yield"]) if row.get("protein_yield") else None,
-                            False,
+                            _as_bool(row.get("is_control")),
                         )
                     )
                     inserted += 1
