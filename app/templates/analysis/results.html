@@ -16,6 +16,13 @@
     </a>
   </div>
 
+  <div style="margin-bottom:1rem;">
+    <a href="{{ url_for('visualisation.landscape', experiment_id=exp.experiment_id) }}"
+       style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+      View 3D Activity Landscape
+    </a>
+  </div>
+
   {% if rows %}
   <div style="overflow-x:auto;">
   <table style="width:100%; border-collapse:collapse; background:#fff; font-size:0.83rem;">
