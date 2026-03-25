@@ -57,6 +57,7 @@
   {% endif %}
 
   <a href="{{ url_for('home.dashboard') }}" style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">← Back to Dashboard</a>
+  <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}" style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">← Activity Score per Generation Graph></a>
 </div>
 
 <style>
