@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Generation Activity Score Distribution{% endblock %}
+{% block content %}
+
+<div class="card">
+    <h1 style="margin-bottom:1rem;">Activity Score per Generation</h1>
+    <img src="data:image/png;base64,{{ boxplot_url }}">
+    <button onclick="history.back()">Go Back to Results</button>
+{% endblock %}
