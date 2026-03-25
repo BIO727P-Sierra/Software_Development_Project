@@ -8,3 +8,8 @@ gunicorn
 requests
 email-validator
 flask-session
+plotly
+scipy
+pandas
+numpy
+scikit-learn
