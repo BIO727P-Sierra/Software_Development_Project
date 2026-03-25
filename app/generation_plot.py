@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import base64
 import io
 
-def plot_boxplot(data_dict):
+def plot_boxplot(data_dict, showoutlier):
     # Create boxplot for activity score per generation
 
     fig = plt.figure(figsize=(8,4))
@@ -12,9 +12,9 @@ def plot_boxplot(data_dict):
         data_dict.values(),
         labels=data_dict.keys(),
         patch_artist=True,
-        notch='True',
+        showfliers=showoutlier,
         vert=0)
-    colors = ['#ff0000', '#ffa200', '#f5ef7a', '#6fa832', '#7af5dc', '#0d00fc', '#ce00fc', '#000000', '#ffffff', '#808080']
+    colors = ['#ff0000', '#ffa200', '#f5ef7a', '#6fa832', '#7af5dc', '#0d00fc', '#ce00fc', '#ce9999', '#ffffff', '#808080']
     for patch, color in zip(bp['boxes'], colors):
         patch.set_facecolor(color)
     for whisker in bp['whiskers']:
@@ -25,8 +25,8 @@ def plot_boxplot(data_dict):
         cap.set(color ="#000000",
                 linewidth = 2)
     for median in bp['medians']:
-        median.set(color ='red',
-                linewidth = 3)
+        median.set(color ='#000000',
+                linewidth = 1)
     for flier in bp['fliers']:
         flier.set(marker ='D',
                 color ='#e7298a',
