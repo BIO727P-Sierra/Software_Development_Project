@@ -63,6 +63,44 @@
     </tbody>
   </table>
   </div>
+  
+  <!-- START of Optional Mutation Fingerprint Section-->
+  <hr style="margin: 2rem 0 1rem;">
+  <h3>Mutation Fingerprint</h3>
+  <p style="color:black; font-size:1rem; margin:0.35rem 0 1rem;"> The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each colour-coded marker indicate by generation in which that mutation was intorduced during directed evolution. </p>
+
+  <label for="variant-select">Choose a variant:</label>
+  <select id="variant-select">
+    {% for row in rows %}
+      <option value="{{ row.variant_id }}">
+        Variant ID {{ row.variant_id }} (Gen {{ row.generation }})
+      </option>
+    {% endfor %}
+  </select>
+
+  <button type="button" onclick="loadFingerprint()" style="margin-left: 10px;">
+    Show fingerprint
+  </button>
+
+  <div id="fingerprint-container" style="margin-top: 20px;">
+    <img id="fingerprint-img" style="max-width:100%;" alt="Mutation fingerprint plot">
+  </div>
+
+  <script>
+  function loadFingerprint() {
+    var variantId = document.getElementById('variant-select').value;
+    if (variantId) {
+      var img = document.getElementById('fingerprint-img');
+      img.src = "{{ url_for('fingerprint.mutation_fingerprint', variant_id=0) }}"
+                  .replace('0', variantId) + '?t=' + new Date().getTime();
+    }
+  }
+  window.addEventListener('load', loadFingerprint);
+  </script>
+  
+  <!-- END of Optional Mutation Fingerprint Visualisation Section-->
+  
+  
   {% else %}
   <p>No scored variants found for this experiment.</p>
   {% endif %}
