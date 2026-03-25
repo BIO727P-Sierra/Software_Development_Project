@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}3D Activity Landscape{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width: 1200px; margin: 40px auto; padding: 20px">
+
+    <h2 style="margin-bottom: 20px;">3D Activity Landscape - Experiment ID {{ experiment_id }}</h2>
+
+    <p style="color:#555; margin-bottom: 20px;">
+        The topographical surface represents the activity scores of protein variants. 
+        Peaks indicate highly active variants with a high DNA yield but low protein expression.
+        The X and Y axes show sequence diversity after <strong>t-SNE</strong> dimensionality reduction.
+    </p>
+
+    <p style="color:#555; font-style: italic; margin-bottom: 30px;">
+        <strong>Legend:</strong> <br>
+        Surface colours: Activity score (warmer = higher activity score) <br>
+        Scatter plot points: Individual protein variants (red = lower activity score, blue = higher activity score)
+    </p>
+
+    <div style="height: 700px; width: 100%;">
+
+        {{ plot_html | safe }}
+
+    </div>
+
+<a href="{{ url_for('analysis.results_experiment', experiment_id=experiment_id) }}"
+     style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">
+    ← Back to Results
+  </a>
+
+</div>
+
+{% endblock %}
