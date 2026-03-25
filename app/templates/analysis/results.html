@@ -23,6 +23,13 @@
     </a>
   </div>
 
+    <div style="margin-bottom:1rem;">
+    <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}"
+       style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+      View Activity Score per Generation
+    </a>
+  </div>
+
   {% if rows %}
   <div style="overflow-x:auto;">
   <table style="width:100%; border-collapse:collapse; background:#fff; font-size:0.83rem;">
@@ -71,7 +78,6 @@
   {% endif %}
 
   <a href="{{ url_for('home.dashboard') }}" style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">← Back to Dashboard</a>
-  <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}" style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">← Activity Score per Generation Graph></a>
 </div>
 
 <style>
