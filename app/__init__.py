@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from .db import get_db, init_app as db_init_app
 from flask_session import Session
 
+
 def create_app(test_config=None):
     app = Flask(__name__, template_folder="templates")
 
@@ -38,7 +39,7 @@ def create_app(test_config=None):
         return User(row["id"], row["email"]) if row else None
 
     # ── Blueprints ────────────────────────────────────────────
-    from . import auth, home, uniprot, FASTA_upload, experiment_upload, analysis, activity_landscape_vis
+    from . import auth, home, uniprot, FASTA_upload, experiment_upload, analysis, activity_landscape_vis, Mutation_Fingerprinting_Vis
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(home.bp)
@@ -46,6 +47,8 @@ def create_app(test_config=None):
     app.register_blueprint(FASTA_upload.bp)
     app.register_blueprint(experiment_upload.bp)
     app.register_blueprint(analysis.bp)
+    app.register_blueprint(Mutation_Fingerprinting_Vis.fingerprint_bp)
     app.register_blueprint(activity_landscape_vis.bp)
+    
 
     return app
