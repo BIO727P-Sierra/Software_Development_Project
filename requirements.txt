@@ -9,3 +9,8 @@ requests
 email-validator
 flask-session
 matplotlib
+plotly
+scipy
+pandas
+numpy
+scikit-learn
