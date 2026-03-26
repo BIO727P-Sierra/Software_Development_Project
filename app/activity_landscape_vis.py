@@ -1,11 +1,12 @@
-import pandas as pd
+mport pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-from sklearn.manifold import TSNE
 from scipy.interpolate import griddata
 from flask import Blueprint, render_template
 from flask_login import login_required
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 from .db import get_db
 
@@ -33,34 +34,34 @@ def get_variants(experiment_id):
     # Converting SQL result into a Dataframe, easier to manipulate the data this way
     df = pd.DataFrame(
         rows,
-        columns=["variant_id", "protein_sequence", "activity_score"])
+        columns=["protein_sequence", "activity_score"])
+    
+    # Remove any sequences that may be empty
+    df = df[df["protein_sequence"].notna()]
+    df = df[df["protein_sequence"].astype(str).str.len() > 0]
 
     return df
 
-# Encoding the proteins
-# Converts protein sequence into a numerical vector due to the use of t-SNA which requires numerical input
+# Encoding the proteins based on frequency
 amino_acids = "ARNDCEQGHILKMFPSTWYV" # Letters of aminoacids
 
-def encode_sequence(sequence, max_length):
+def encode_sequences(sequences):
+    n = len(sequences)
 
-    # Creating vectors of equal size
-    sequence = sequence.ljust(max_length, "-")
-    
-    encoded_proteins = []
+    # Preallocate compact array
+    X = np.zeros((n, len(amino_acids)), dtype=np.float32)
 
-    for aa in sequence:
+    for i, seq in enumerate(sequences):
+        for aa in seq:
+            idx = {aa: i for i, aa in enumerate(amino_acids)}.get(aa)
+            if idx is not None:
+                X[i, idx] += 1
+        if len(seq) > 0:
+            X[i] /= len(seq)
 
-        if aa in amino_acids:
-            vector = [1 if aa == x else 0 for x in amino_acids]
-        else:
-            vector = [0]*len(amino_acids)
-            # Unkown or filler characters are 0
-        
-        encoded_proteins.extend(vector)
+    return X
 
-    return encoded_proteins
-
-# Generating landscape, X and Y represent sequence similarity (t-SNE) and Z the activity score
+# Generating landscape, X and Y represent sequence similarity and Z the activity score
 def generate_landscape(experiment_id):
 
     df = get_variants(experiment_id)
@@ -68,40 +69,40 @@ def generate_landscape(experiment_id):
     if df.empty:
         return "<p>No activity data available.</p>"
     
-    # Remove any sequences that may be empty
-    df = df[df["protein_sequence"].notna()]
-    df = df[df["protein_sequence"].astype(str).str.len() > 0]
-
     # Error for is all sequences are empty
     if df.empty:
         return "<p>No valid protein sequences found.</p>"
-
-    # Finding longest sequence to ensure equal lengths
-    max_length = df["protein_sequence"].astype(str).str.len().max()
-
-    # Converting to numerical vectors
-    encoded_sequences = df["protein_sequence"].apply(lambda seq: encode_sequence(seq, max_length))
     
-    X = np.array(encoded_sequences.to_list())
+    max_samples = 2000
+    if len(df) > max_samples:
+        df = df.sample(n=max_samples, random_state=42)
+
+    sequences = df["protein_sequence"].values
+
+    # More memory efficient coding
+    X = encode_sequences(sequences)
 
     if X.shape[1] == 0:
         return "<p>Encoding failed.</p>"
     
-    # Performing t-SNE, reducing dimensionality and allow clustering
-    tsne = TSNE(n_components=2, perplexity=30, random_state=42)
-    components = tsne.fit_transform(X)
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Performing PCA, reducing dimensionality and allow clustering
+    pca = PCA(n_components=2, random_state=42)
+    components = pca.fit_transform(X_scaled)
 
     df["x"] = components[:, 0]
     df["y"] = components[:, 1]
 
     # Creating the grids with activity score
-    grid_x, grid_y = np.mgrid[df.x.min():df.x.max():100j, df.y.min():df.y.max():100j]
+    grid_x, grid_y = np.mgrid[df.x.min():df.x.max():40j, df.y.min():df.y.max():40j]
 
     grid_z = griddata(
         (df.x, df.y),
         df.activity_score,
         (grid_x, grid_y),
-        method="cubic"
+        method="linear"
     )
 
     # Creating the plot topographical surface
@@ -131,8 +132,8 @@ def generate_landscape(experiment_id):
     fig.update_layout(
         title = "3D Activity Landscape",
         scene=dict(
-            xaxis_title = "Sequence Diversity (t-SNE 1)",
-            yaxis_title = "Sequence Diversity (t-SNE 2)",
+            xaxis_title = "Sequence Diversity (PC1)",
+            yaxis_title = "Sequence Diversity (PC2)",
             zaxis_title = "Activity Score"
         ),
         margin=dict(l=0, r=0, b=0, t=40)
