@@ -10,6 +10,8 @@ def retrieve_protein_sequence_features(uniprot_id):
     try:
         if entry_response.ok == False:
             return None, f"Invalid Uniprot ID. Error code: {entry_response.status_code}"
+        elif entry_response.text == '':
+            return None, "Entry empty - possibly demerged. Try another Uniprot ID"
     except requests.RequestException as e:
         return None, f"Error: {e}"
     
