@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import base64
 import io
+import numpy as np
 
 def plot_boxplot(data_dict, showoutlier):
     # Create boxplot for activity score per generation
@@ -14,7 +15,7 @@ def plot_boxplot(data_dict, showoutlier):
         patch_artist=True,
         showfliers=showoutlier,
         vert=0)
-    colors = ['#ff0000', '#ffa200', '#f5ef7a', '#6fa832', '#7af5dc', '#0d00fc', '#ce00fc', '#ce9999', '#ffffff', '#808080']
+    colors = plt.cm.tab10(np.linspace(0, 1, len(data_dict.keys())))
     for patch, color in zip(bp['boxes'], colors):
         patch.set_facecolor(color)
     for whisker in bp['whiskers']:
