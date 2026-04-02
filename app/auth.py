@@ -4,6 +4,7 @@ import psycopg
 from psycopg import errors as pg_errors
 from flask_login import UserMixin, login_user, login_required, logout_user
 from .db import get_db
+from email_validator import validate_email, EmailNotValidError 
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -17,14 +18,24 @@ class User(UserMixin):
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        email = (request.form.get("email") or "").strip().lower()
+        raw_email = request.form.get("email") or ""
         password = request.form.get("password") or ""
 
         error = None
-        if not email:
+        email = None
+        
+        if not raw_email.strip():
             error = "Email is required."
         elif not password:
             error = "Password is required."
+        else:
+            try:
+                valid = validate_email(raw_email, check_deliverability=True)
+                email = valid.normalized.lower()
+            except EmailNotValidError:
+                error = "Enter a valid email address."
+
+
 
         if error is None:
             db = get_db()
@@ -38,7 +49,7 @@ def register():
                 return redirect(url_for("auth.login"))
             except pg_errors.UniqueViolation:
                 db.rollback()
-                error = "That email is already registered. Try logging in."
+                error = "The email you have entered is already in use. Try logging in or use another email instead."
             except psycopg.Error:
                 db.rollback()
                 error = "A database error occurred. Please try again."
