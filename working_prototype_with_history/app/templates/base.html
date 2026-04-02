@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Directed Evolution Portal{% endblock %}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f4f6f9; color: #222; min-height: 100vh; }
+    nav { background: #1a1a2e; padding: 0.75rem 2rem; display: flex; align-items: center; gap: 1.5rem; }
+    nav a { color: #e0e0e0; text-decoration: none; font-size: 0.9rem; }
+    nav a:hover { color: #fff; text-decoration: underline; }
+    nav .brand { color: #fff; font-weight: bold; font-size: 1.05rem; margin-right: auto; }
+    .container { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 2rem; margin-bottom: 1.5rem; }
+    .flashes { list-style: none; margin-bottom: 1rem; }
+    .flashes li { background: #fef3c7; border: 1px solid #f59e0b; padding: 0.5rem 1rem; border-radius: 4px; margin-bottom: 0.4rem; }
+    .btn { display: inline-block; padding: 0.5rem 1.2rem; border-radius: 4px; border: none; cursor: pointer; font-size: 0.95rem; text-decoration: none; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary { background: #6b7280; color: #fff; }
+    .btn-secondary:hover { background: #4b5563; }
+    label { display: block; margin-bottom: 0.3rem; font-weight: bold; font-size: 0.9rem; }
+    input[type=text], input[type=email], input[type=password], input[type=file] {
+      width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db;
+      border-radius: 4px; font-size: 0.95rem; margin-bottom: 1rem;
+    }
+    .success { color: #16a34a; } .error { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="brand">🧬 Directed Evolution Portal</span>
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('home.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('past_experiments.list_experiments') }}">Past Experiments</a>
+      <a href="{{ url_for('uniprot.uniprot_search') }}">New Experiment</a>
+      <a href="{{ url_for('auth.logout') }}">Logout ({{ current_user.email }})</a>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">Login</a>
+      <a href="{{ url_for('auth.register') }}">Register</a>
+    {% endif %}
+  </nav>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for msg in messages %}<li>{{ msg }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>
