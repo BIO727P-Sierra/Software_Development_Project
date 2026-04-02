@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
-{% block content %}
-<div class="card">
-  <h1 style="margin-bottom:0.5rem;">Welcome back, {{ user.email }}!</h1>
-  <p style="color:#666; margin-bottom:1.5rem;">User ID: {{ user.id }}</p>
-  <a href="{{ url_for('uniprot.uniprot_search') }}" class="btn btn-primary">Start New Experiment</a>
-</div>
-{% endblock %}
