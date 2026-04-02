@@ -167,8 +167,6 @@ def run_step1_experiment(experiment_id: int):
             mutation_results = run_mutation_analysis(
                 wt_protein=wt_protein,
                 variant_protein=out["orf_protein_sequence"],
-                wt_dna=wt_dna,
-                variant_dna=out["orf_cds_dna"],
             )
             save_variant_mutations(
                 db,
