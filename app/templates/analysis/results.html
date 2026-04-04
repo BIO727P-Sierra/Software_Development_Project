@@ -69,7 +69,23 @@
   <p style="color:#666; font-size:0.9rem; margin-bottom:1.25rem;">
     Experiment ID: {{ exp.experiment_id }} &nbsp;|&nbsp;
     UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank">{{ exp.uniprot_id }}</a>
+    {% if exp.saved_at %}
+      &nbsp;|&nbsp; <span style="color:#16a34a; font-weight:600;">&#10003; Saved</span>
+      <span style="color:#9ca3af; font-size:0.85rem;">({{ exp.saved_at.strftime('%d %b %Y') }})</span>
+    {% endif %}
   </p>
+
+  {% if not exp.saved_at %}
+  <div style="margin-bottom:1rem;">
+    <form method="POST" action="{{ url_for('past_experiments.save_experiment', experiment_id=exp.experiment_id) }}" style="display:inline;">
+      <input type="hidden" name="next" value="{{ request.url }}">
+      <button type="submit"
+        style="padding:0.5rem 0.9rem; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;">
+        Save Experiment
+      </button>
+    </form>
+  </div>
+  {% endif %}
 
   <p style="color:#555; font-size:0.9rem; margin-bottom:0.75rem;">
     Analysis complete. Use the options below to explore your results — view the top performing variants, visualise the activity landscape across sequence space, or track how activity changes across generations.
