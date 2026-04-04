@@ -41,8 +41,7 @@
         <th title="Parent variant ID (if applicable).">Parent</th>
         <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
         <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
-        <th title="Unified activity score (DNA yield normalized by protein yield, baseline-corrected).">Activity Score</th>
-        <th title="Log10 of (Activity Score + 1) for easier readability.">Activity Score (log10)</th>
+        <th title="Unified activity score (log2 of DNA fold change divided by protein fold-change vs WT controls).">Activity Score (log2)</th>
         <th title="Total number of mutations compared to WT.">Mutation Total</th>
       </tr>
     </thead>
@@ -56,7 +55,6 @@
         <td>{{ "%.3f"|format(row.dna_yield) if row.dna_yield is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.protein_yield) if row.protein_yield is not none else '—' }}</td>
         <td>{{ "%.4f"|format(row.activity_score) if row.activity_score is not none else '—' }}</td>
-        <td>{{ "%.4f"|format(row.activity_score_log) if row.activity_score_log is not none else '—' }}</td>
         <td>{{ row.mutation_total if row.mutation_total is not none else '—' }}</td>
       </tr>
       {% endfor %}
@@ -64,10 +62,10 @@
   </table>
   </div>
   
-  <!-- START of Optional Mutation Fingerprint Section-->
+  <!-- START of Optional Mutation Fingerprint Section underneath top 10 performance table-->
   <hr style="margin: 2rem 0 1rem;">
   <h3>Mutation Fingerprint</h3>
-  <p style="color:black; font-size:1rem; margin:0.35rem 0 1rem;"> The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each colour-coded marker indicate by generation in which that mutation was intorduced during directed evolution. </p>
+  <p style="color:black; font-size:1rem; margin:0.35rem 0 1rem;"> The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each marker indicate by generation in which that mutation was introduced during directed evolution. </p>
 
   <label for="variant-select">Choose a variant:</label>
   <select id="variant-select">

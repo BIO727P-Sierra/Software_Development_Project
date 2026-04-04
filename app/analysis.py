@@ -26,7 +26,7 @@ def results_experiment(experiment_id: int):
     with db.cursor() as cur:
         cur.execute(
             """
-            SELECT experiment_id, experiment_name, uniprot_id
+            SELECT experiment_id, experiment_name, uniprot_id, saved_at
             FROM experiments
             WHERE experiment_id = %s
             """,
