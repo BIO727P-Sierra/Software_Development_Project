@@ -34,6 +34,9 @@ def insert_variants(db, experiment_id, valid_records):
     """Insert validated variant records into the database."""
     inserted = 0
     skipped = 0
+    # We will need to keep track of which variants have parents,
+    # so we can update them after all variants have been inserted.
+    pending_parent_updates = []
 
     with db.cursor() as cur:
         for row in valid_records:
@@ -54,7 +57,7 @@ def insert_variants(db, experiment_id, valid_records):
                     (
                         experiment_id,
                         int(row["plasmid_variant_index"]),
-                        None,  # parent_variant_id resolved later
+                        None, # This is updated later
                         int(row["generation"]),
                         row["assembled_dna_sequence"],
                         row.get("protein_sequence") or "",  # NOT NULL in schema
@@ -64,6 +67,15 @@ def insert_variants(db, experiment_id, valid_records):
                 result = cur.fetchone()
                 if result:
                     variant_id = result["variant_id"]
+
+                    # store the variant in the parent update list
+                    pending_parent_updates.append(
+                        {
+                            "variant_id": variant_id,
+                            "parent_plasmid_variant_index": row["parent_variant_id"],
+                        }
+                    )
+
                     # Upsert measurements — delete-then-insert keeps it simple
                     # because measurements has no natural unique key of its own.
                     cur.execute(
@@ -94,6 +106,24 @@ def insert_variants(db, experiment_id, valid_records):
             except Exception as e:
                 skipped += 1
                 continue
+
+        # We now need to go through the parent variant update list and match the parents.
+        for update in pending_parent_updates:
+            parent_index = update["parent_plasmid_variant_index"]
+            if parent_index is None:
+                continue # no parent, carry on
+
+            cur.execute(
+                """
+                UPDATE variants AS child
+                SET parent_variant_id = parent.variant_id
+                FROM variants AS parent
+                WHERE child.variant_id = %s
+                AND parent.experiment_id = %s
+                AND parent.plasmid_variant_index = %s
+                """,
+                (update["variant_id"], experiment_id, parent_index),
+            )
 
     db.commit()
     return inserted, skipped
