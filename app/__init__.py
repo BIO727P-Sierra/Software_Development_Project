@@ -50,7 +50,6 @@ def create_app(test_config=None):
     app.register_blueprint(Mutation_Fingerprinting_Vis.fingerprint_bp)
     app.register_blueprint(activity_landscape_vis.bp)
     app.register_blueprint(past_experiments.bp)
-    app.register_blueprint(report.bp)
     
 
     return app

@@ -49,8 +49,9 @@ class ORFHit:
 class SelectionPolicy:
     """Thresholds/Filter used to select the best ORF."""
     min_aa: int = 200 # ignores tiny ORFs that are unlikely to be polymerase
-    coverage_threshold: float = 0.6  # enforces that candidate aligns to a majority of WT
-    length_window: Tuple[float, float] = (0.7, 1.3) # plausible length bounds relative to WT; filters truncations/concatemers
+    coverage_threshold: float = 0.8  # enforces that candidate aligns to a majority of WT
+    score_threshold: float = 0.5  # minimum alignment identity; below this the wrong gene was almost certainly picked
+    length_window: Tuple[float, float] = (0.85, 1.15) # plausible length bounds relative to WT; filters truncations/concatemers
 
 # allows swapping scoring method without changing core code
 Scorer = Callable[[str, str], Tuple[float, float]] 
@@ -442,15 +443,20 @@ def select_best_orf(scored_orfs: List[ORFHit], *, wt_len: int, policy: Selection
             "No ORF candidates passed length_window filtering; widen length_window or lower min_aa."
         )
 
-    # Rank by coverage (primary) and final score (tiebreaker)
-    # Coverage is more important because it ensures alignment to most of WT
-    # Final score breaks ties between ORFs with similar coverage
-    best = max(candidates, key=lambda h: (h.coverage, h.final))
+    # Rank by final score (primary: score × length_similarity) then coverage (tiebreaker)
+    # final is preferred as primary because it rewards both high identity and correct length
+    best = max(candidates, key=lambda h: (h.final, h.coverage))
 
     # Validate that best candidate meets minimum coverage threshold
     if best.coverage < policy.coverage_threshold:
         raise ValueError(
             f"Best ORF coverage {best.coverage:.2f} < threshold {policy.coverage_threshold:.2f}."
+        )
+
+    # Validate that best candidate meets minimum score threshold
+    if best.score < policy.score_threshold:
+        raise ValueError(
+            f"Best ORF score {best.score:.2f} < threshold {policy.score_threshold:.2f}."
         )
 
     return best
