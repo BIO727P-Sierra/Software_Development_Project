@@ -71,21 +71,25 @@
   <table class="portal-table">
     <thead>
       <tr>
+        <th title="Unique identifier for this variant.">Variant ID</th>
         <th title="Directed evolution generation number for the variant.">Generation</th>
+        <th title="Index of the plasmid variant within the experiment.">Index</th>
+        <th title="Variant ID of the parent from which this variant was derived.">Parent</th>
         <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
         <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
-        <th title="Unified activity score (DNA yield normalised by protein yield, baseline-corrected).">Activity Score</th>
-        <th title="Total number of mutations compared to the wild-type sequence.">Mutations</th>
-        <th title="Variant ID of the parent from which this variant was derived.">Parent Variant ID</th>
+        <th title="Unified activity score (log2 DNA fold change normalised by protein fold change).">Activity Score</th>
+        <th title="Total number of mutations compared to the wild-type sequence.">Mutation Total</th>
       </tr>
     </thead>
     <tbody>
       {% for row in rows %}
       <tr>
+        <td>{{ row.variant_id }}</td>
         <td>{{ row.generation }}</td>
+        <td>{{ row.plasmid_variant_index if row.plasmid_variant_index is not none else '—' }}</td>
+        <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.dna_yield) if row.dna_yield is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.protein_yield) if row.protein_yield is not none else '—' }}</td>
-
         <td>
           {% if row.activity_score is not none %}
             <span class="activity-pill {% if row.activity_score > 1 %}high{% endif %}">{{ "%.4f"|format(row.activity_score) }}</span>
@@ -93,13 +97,11 @@
             <span class="activity-pill none">—</span>
           {% endif %}
         </td>
-
         <td>
           {% if row.mutation_total is not none %}
             <span class="mut-badge {% if row.mutation_total == 0 %}zero{% endif %}">{{ row.mutation_total }}</span>
           {% else %}—{% endif %}
         </td>
-        <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
       </tr>
       {% endfor %}
     </tbody>
