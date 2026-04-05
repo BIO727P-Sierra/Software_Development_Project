@@ -10,6 +10,8 @@ def retrieve_protein_sequence_features(uniprot_id):
     try:
         if entry_response.ok == False:
             return None, f"Invalid Uniprot ID. Error code: {entry_response.status_code}"
+        elif entry_response.text == '':
+            return None, "Entry empty - possibly demerged. Try another Uniprot ID"
     except requests.RequestException as e:
         return None, f"Error: {e}"
     
@@ -26,13 +28,15 @@ def retrieve_protein_sequence_features(uniprot_id):
     aminoacid_sequence = ''.join(sequence_fasta.split('\n')[1:])    # Removes header and joins sequences separated by new lines
 
     # Filter json for feature details - removes some info such as publishing/ annotation dates, comments etc.
-    json_filter = '?fields=ft_var_seq%2Cft_variant%2Cft_non_cons%2Cft_non_std%2Cft_non_ter%2Cft_conflict%2Cft_unsure%2Cft_act_site%2Cft_binding%2Cft_dna_bind%2Cft_site%2Cft_mutagen%2Cft_intramem%2Cft_topo_dom%2Cft_transmem%2Cft_chain%2Cft_crosslnk%2Cft_disulfid%2Cft_carbohyd%2Cft_init_met%2Cft_lipid%2Cft_mod_res%2Cft_peptide%2Cft_propep%2Cft_signal%2Cft_transit%2Cft_strand%2Cft_helix%2Cft_turn%2Cft_coiled%2Cft_compbias%2Cft_domain%2Cft_motif%2Cft_region%2Cft_repeat%2Cft_zn_fing'
+    json_filter = '?fields=protein_name,organism_name,ft_var_seq%2Cft_variant%2Cft_non_cons%2Cft_non_std%2Cft_non_ter%2Cft_conflict%2Cft_unsure%2Cft_act_site%2Cft_binding%2Cft_dna_bind%2Cft_site%2Cft_mutagen%2Cft_intramem%2Cft_topo_dom%2Cft_transmem%2Cft_chain%2Cft_crosslnk%2Cft_disulfid%2Cft_carbohyd%2Cft_init_met%2Cft_lipid%2Cft_mod_res%2Cft_peptide%2Cft_propep%2Cft_signal%2Cft_transit%2Cft_strand%2Cft_helix%2Cft_turn%2Cft_coiled%2Cft_compbias%2Cft_domain%2Cft_motif%2Cft_region%2Cft_repeat%2Cft_zn_fing'
     # Retrieve features in json format
     feature_url = f'{uniprot_url}.json{json_filter}'
     try:
         json_response = requests.get(feature_url)
         if json_response.ok:
             feature_json = json_response.json()
+            protein_name = feature_json["proteinDescription"]["recommendedName"]["fullName"]["value"]    # Name of protein
+            organism_name = feature_json["organism"]["scientificName"]    # Scientific name of organism 
         else:
             return None, 'Feature access failed'
     except requests.RequestException as e:
@@ -55,4 +59,4 @@ def retrieve_protein_sequence_features(uniprot_id):
         features_type_location += [feature_dict]
 
 
-    return aminoacid_sequence, features_type_location # Need to add data to SQL database
+    return aminoacid_sequence, features_type_location, protein_name, organism_name # Need to add data to SQL database except protein name and organism name for review

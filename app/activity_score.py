@@ -1,12 +1,13 @@
+# import math library for log2 scaling of activity score
+import math
+
 # compute a unified activity score, where DNA and protein yields are baseline-corrected
-# clamp yields to stay above 0 and then score as corrected_dna and corrected_protein
 def compute_activity_score(
     dna_yield,
     protein_yield,
     dna_baseline,
     protein_baseline,
     epsilon=1e-6,
-    max_score=1_000_000.0,
     min_protein=0.01,
 ):
 
@@ -14,14 +15,19 @@ def compute_activity_score(
     if dna_yield is None or protein_yield is None:
         raise ValueError("dna_yield and protein_yield must be present")
 
-    corrected_dna = max(float(dna_yield) - float(dna_baseline), 0.0)
-    corrected_protein = max(float(protein_yield) - float(protein_baseline), 0.0)
-
-    if corrected_protein < min_protein:
+    if protein_yield < min_protein:
         return None
 
-    score = corrected_dna / max(corrected_protein, epsilon)
-    return min(score, max_score)
+    # Calculate how much DNA did the variant produce compared to WT
+    # and how much protein did this variant produce compared to WT
+    dna_fold = float(dna_yield) / max(float(dna_baseline), epsilon)                 # DNA Fold Change
+    protein_fold = float(protein_yield) / max(float(protein_baseline), epsilon)     # Protein Fold Change
+
+    # DNA yield is normalised by protein yield after accounting for baseline DNA and protein concentrations
+    # Log2 scale is used to help represent proportional changes (fold changes)
+    score = math.log2(dna_fold / max(protein_fold, epsilon))
+
+    return score
 
 # Find all unique generation numbers for an experiment and sort into ascending order
 # return as a list

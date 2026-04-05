@@ -7,7 +7,23 @@
   <p style="color:#666; font-size:0.9rem; margin-bottom:1.25rem;">
     Experiment ID: {{ exp.experiment_id }} &nbsp;|&nbsp;
     UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank">{{ exp.uniprot_id }}</a>
+    {% if exp.saved_at %}
+      &nbsp;|&nbsp; <span style="color:#16a34a; font-weight:600;">&#10003; Saved</span>
+      <span style="color:#9ca3af; font-size:0.85rem;">({{ exp.saved_at.strftime('%d %b %Y') }})</span>
+    {% endif %}
   </p>
+
+  {% if not exp.saved_at %}
+  <div style="margin-bottom:1rem;">
+    <form method="POST" action="{{ url_for('past_experiments.save_experiment', experiment_id=exp.experiment_id) }}" style="display:inline;">
+      <input type="hidden" name="next" value="{{ request.url }}">
+      <button type="submit"
+        style="padding:0.5rem 0.9rem; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;">
+        Save Experiment
+      </button>
+    </form>
+  </div>
+  {% endif %}
 
   <div style="margin-bottom:1rem;">
     <a href="{{ url_for('analysis.top_performers', experiment_id=exp.experiment_id) }}"
@@ -20,6 +36,13 @@
     <a href="{{ url_for('visualisation.landscape', experiment_id=exp.experiment_id) }}"
        style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
       View 3D Activity Landscape
+    </a>
+  </div>
+
+    <div style="margin-bottom:1rem;">
+    <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}"
+       style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+      View Activity Score per Generation
     </a>
   </div>
 

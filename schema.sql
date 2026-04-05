@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS experiments (
     validation_note     TEXT,
     metadata            JSONB,
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    saved_at            TIMESTAMP,
 
     CONSTRAINT fk_experiment_user
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
