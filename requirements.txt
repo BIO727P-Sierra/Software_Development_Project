@@ -14,4 +14,3 @@ pandas
 numpy
 scikit-learn
 matplotlib
-reportlab
