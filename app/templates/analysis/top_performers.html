@@ -75,8 +75,8 @@
         <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
         <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
         <th title="Unified activity score (DNA yield normalised by protein yield, baseline-corrected).">Activity Score</th>
-        <th title="Log10 of (Activity Score + 1) for easier readability.">Activity Score (log10)</th>
         <th title="Total number of mutations compared to the wild-type sequence.">Mutations</th>
+        <th title="Variant ID of the parent from which this variant was derived.">Parent Variant ID</th>
       </tr>
     </thead>
     <tbody>
@@ -94,13 +94,12 @@
           {% endif %}
         </td>
 
-        <td>{{ "%.4f"|format(row.activity_score_log) if row.activity_score_log is not none else '—' }}</td>
-
         <td>
           {% if row.mutation_total is not none %}
             <span class="mut-badge {% if row.mutation_total == 0 %}zero{% endif %}">{{ row.mutation_total }}</span>
           {% else %}—{% endif %}
         </td>
+        <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
       </tr>
       {% endfor %}
     </tbody>

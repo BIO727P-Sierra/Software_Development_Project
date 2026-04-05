@@ -5,7 +5,6 @@ from .sequence_processor import run_step1_for_variant_row, SelectionPolicy
 from .mutation_calc import run_mutation_analysis
 from .mutation_repository import save_variant_mutations
 from .activity_score import calculate_scores_for_experiment
-import math
 from .top_performer_table import fetch_top_performers
 from collections import defaultdict
 from .generation_plot import plot_boxplot
@@ -90,9 +89,6 @@ def top_performers(experiment_id: int):
             abort(404)
 
     rows = fetch_top_performers(db, experiment_id, limit=10)
-    for r in rows:
-        score = r.get("activity_score")
-        r["activity_score_log"] = math.log10(score + 1) if score is not None else None
     summary = session.get("analysis_summary")
     return render_template("analysis/top_performers.html", exp=exp, rows=rows, summary=summary)
 
