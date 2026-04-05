@@ -1,0 +1,17 @@
+flask>=3.0
+flask-login
+flask-wtf
+psycopg[binary]
+biopython
+werkzeug
+gunicorn
+requests
+email-validator
+flask-session
+plotly
+scipy
+pandas
+numpy
+scikit-learn
+matplotlib
+reportlab
