@@ -23,10 +23,12 @@ def uniprot_search():
         uniprot_id = form.uniprot_id.data.strip()
         result = retrieve_protein_sequence_features(uniprot_id)
         if result[0] is not None:
-            aminoacid_sequence, features_type_location = result
+            aminoacid_sequence, features_type_location, protein_name, organism_name = result
             session["uniprot_id"] = uniprot_id
             session["aminoacid_sequence"] = aminoacid_sequence
             session["features_type_location"] = features_type_location
+            session["protein_name"] = protein_name
+            session["organism_name"] = organism_name
             return redirect(url_for("uniprot.confirmation"))
         else:
             flash(result[1])
@@ -39,11 +41,15 @@ def confirmation():
     uniprot_id = session.get("uniprot_id")
     aminoacid_sequence = session.get("aminoacid_sequence")
     features_type_location = session.get("features_type_location")
+    protein_name = session.get("protein_name")
+    organism_name = session.get("organism_name")
     return render_template(
         "uniprot/uniprot_review.html",
         uniprot_id=uniprot_id,
         aminoacid_sequence=aminoacid_sequence,
         features_type_location=features_type_location,
+        protein_name=protein_name,
+        organism_name=organism_name
     )
 
 
