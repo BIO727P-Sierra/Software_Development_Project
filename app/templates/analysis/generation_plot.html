@@ -1,29 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Generation Activity Score Distribution{% endblock %}
+{% block title %}Activity Score per Generation{% endblock %}
 {% block content %}
-<head>
-  <style>
-    #boxplot {
-      width: 1000px;
-      height: 500px;
-    }
-  </style>
-</head>
-<body>
 
-<h2>Unified Activity Score per Generation</h2>
+<div class="card">
+  <h1 style="margin-bottom:0.5rem;">Activity Score per Generation</h1>
+  <p style="color:#6b7280; margin-bottom:1.75rem;">
+    Box plot showing the distribution of unified activity scores across directed evolution generations.
+    Toggle outliers to focus on the core distribution.
+  </p>
 
-<img id="boxplot" src="data:image/png;base64,{{ boxplot_url_outlier }}">
+  <div style="margin-bottom:1.5rem;">
+    <img id="boxplot" src="data:image/png;base64,{{ boxplot_url_outlier }}"
+         style="width:100%; height:auto; border-radius:8px; border:1.5px solid #e5e7eb;">
+  </div>
 
-<br><br>
-<button id="toggleBtn" onclick="changeImage()">Hide Outliers</button>
+  <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+    <button id="toggleBtn" onclick="changeImage()" class="btn btn-primary" style="padding:0.7rem 1.6rem; font-size:1.05rem;">
+      Hide Outliers
+    </button>
+    <a href="javascript:history.back()" class="btn btn-secondary" style="padding:0.7rem 1.6rem; font-size:1.05rem;">
+      Back to Results
+    </a>
+  </div>
+</div>
 
 <script>
   let showingImage1 = true;
   function changeImage() {
     const img = document.getElementById('boxplot');
     const btn = document.getElementById('toggleBtn');
-
     if (showingImage1) {
       img.src = "data:image/png;base64,{{ boxplot_url_nooutlier }}";
       btn.innerText = 'Show Outliers';
@@ -35,7 +40,4 @@
   }
 </script>
 
-</body>
-</html>
-<button onclick="history.back()">Go Back to Results</button>
 {% endblock %}

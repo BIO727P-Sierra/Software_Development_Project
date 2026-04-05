@@ -3,103 +3,134 @@
 {% block content %}
 
 <style>
+  .results-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .meta-pill {
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    color: #374151;
+  }
+  .meta-pill strong { color: #1a1a2e; }
+
+  .action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .action-bar a {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+  .action-bar a:hover { background: #1d4ed8; }
+
   .portal-table-wrap { overflow-x: auto; }
   .portal-table {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    font-size: 0.83rem;
+    font-size: 1.1rem;
   }
   .portal-table th, .portal-table td {
-    padding: 0.45rem 0.65rem;
+    padding: 0.9rem 1.3rem;
     border: 1px solid #e5e7eb;
     text-align: left;
   }
   .portal-table th {
     background: #f1f5f9;
-    font-weight: 600;
+    font-weight: 700;
+    color: #374151;
     cursor: default;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
   .portal-table tbody tr:hover td { background: #f8fafc; }
 
-  .btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .btn-group a {
-    display: inline-block;
-    padding: 0.5rem 0.9rem;
-    background: #2563eb;
-    color: #fff;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .btn-group a:hover { background: #1d4ed8; }
-
-  .score-bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+  .score-bar-wrap { display: flex; align-items: center; gap: 0.6rem; }
   .score-bar-track {
-    width: 50px; height: 5px;
+    width: 72px; height: 7px;
     background: #e5e7eb; border-radius: 99px; overflow: hidden;
   }
   .score-bar-fill { height: 100%; border-radius: 99px; background: #2563eb; }
   .score-bar-fill.high { background: #16a34a; }
 
   .mut-badge {
-    display: inline-block; padding: 0.1rem 0.5rem;
-    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    display: inline-block; padding: 0.25rem 0.75rem;
+    border-radius: 99px; font-size: 0.95rem; font-weight: 700;
     background: #ede9fe; color: #5b21b6;
   }
-  .mut-badge.zero { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+  .mut-badge.zero { background: #f3f4f6; color: #9ca3af; font-weight: 500; }
 
   .activity-pill {
-    display: inline-block; padding: 0.1rem 0.5rem;
-    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    display: inline-block; padding: 0.25rem 0.75rem;
+    border-radius: 99px; font-size: 0.95rem; font-weight: 700;
     background: #fef3c7; color: #92400e;
   }
   .activity-pill.high { background: #d1fae5; color: #065f46; }
-  .activity-pill.none { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+  .activity-pill.none { background: #f3f4f6; color: #9ca3af; font-weight: 500; }
+
+  .saved-badge {
+    display:inline-flex; align-items:center; gap:0.4rem;
+    background:#f0fdf4; color:#166534; border:1px solid #86efac;
+    border-radius:8px; padding:0.35rem 0.85rem; font-size:0.9rem; font-weight:600;
+  }
 </style>
 
 <div class="card">
-  <h1 style="margin-bottom:0.25rem;">{{ exp.experiment_name }}</h1>
-  <p style="color:#666; font-size:0.9rem; margin-bottom:1.25rem;">
-    Experiment ID: {{ exp.experiment_id }} &nbsp;|&nbsp;
-    UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank">{{ exp.uniprot_id }}</a>
-    {% if exp.saved_at %}
-      &nbsp;|&nbsp; <span style="color:#16a34a; font-weight:600;">&#10003; Saved</span>
-      <span style="color:#9ca3af; font-size:0.85rem;">({{ exp.saved_at.strftime('%d %b %Y') }})</span>
-    {% endif %}
-  </p>
-
-  {% if not exp.saved_at %}
-  <div style="margin-bottom:1rem;">
-    <form method="POST" action="{{ url_for('past_experiments.save_experiment', experiment_id=exp.experiment_id) }}" style="display:inline;">
-      <input type="hidden" name="next" value="{{ request.url }}">
-      <button type="submit"
-        style="padding:0.5rem 0.9rem; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;">
-        Save Experiment
-      </button>
-    </form>
+  <!-- Header -->
+  <div class="results-header">
+    <div>
+      <h1 style="margin-bottom:0.3rem;">{{ exp.experiment_name }}</h1>
+      <div class="meta-row" style="margin-bottom:0;">
+        <span class="meta-pill">ID: <strong>{{ exp.experiment_id }}</strong></span>
+        <span class="meta-pill">UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank" style="color:#2563eb; font-weight:600;">{{ exp.uniprot_id }}</a></span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+      {% if exp.saved_at %}
+        <span class="saved-badge">✓ Saved {{ exp.saved_at.strftime('%d %b %Y') }}</span>
+      {% else %}
+        <form method="POST" action="{{ url_for('past_experiments.save_experiment', experiment_id=exp.experiment_id) }}" style="display:inline;">
+          <input type="hidden" name="next" value="{{ request.url }}">
+          <button type="submit" class="btn btn-success">Save Experiment</button>
+        </form>
+      {% endif %}
+    </div>
   </div>
-  {% endif %}
 
-  <p style="color:#555; font-size:0.9rem; margin-bottom:0.75rem;">
-    Analysis complete. Use the options below to explore your results — view the top performing variants, visualise the activity landscape across sequence space, or track how activity changes across generations.
-  </p>
-
-  <div class="btn-group">
-    <a href="{{ url_for('analysis.top_performers', experiment_id=exp.experiment_id) }}">Top 10 Performing Variants</a>
+  <!-- Action buttons -->
+  <div class="action-bar">
+    <a href="{{ url_for('analysis.top_performers', experiment_id=exp.experiment_id) }}">Top 10 Performers</a>
     <a href="{{ url_for('visualisation.landscape', experiment_id=exp.experiment_id) }}">3D Activity Landscape</a>
-    <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}">Activity Score per Generation</a>
+    <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}">Activity per Generation</a>
   </div>
 
-  <h2 style="font-size:1rem; font-weight:700; margin-bottom:0.3rem;">ORF Analysis Results</h2>
-  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:0.75rem;">
-    Each row is one plasmid variant. The portal identifies the best-matching open reading frame within each plasmid and scores it against the wild-type protein. Hover over a column header for more detail.
+  <!-- Table -->
+  <h2 style="font-size:1.1rem; margin-bottom:0.4rem;">ORF Analysis Results</h2>
+  <p style="color:#6b7280; margin-bottom:1rem;">
+    Each row is one plasmid variant. The portal identifies the best-matching open reading frame and scores it against the wild-type protein. Hover over a column header for more detail.
   </p>
 
   {% if rows %}
@@ -107,19 +138,19 @@
   <table class="portal-table">
     <thead>
       <tr>
-        <th title="Directed evolution generation number.">Generation</th>
+        <th title="Directed evolution generation number.">Gen</th>
         <th title="0-based start coordinate of the identified ORF within the circular plasmid.">ORF Start</th>
         <th title="0-based end coordinate of the identified ORF within the circular plasmid.">ORF End</th>
         <th title="Length of the identified ORF protein in amino acids.">Protein Len</th>
-        <th title="Final = alignment identity x length similarity. 1.0 means the ORF matches the wild-type perfectly in both sequence and length.">Final Score</th>
+        <th title="Final = alignment identity × length similarity. 1.0 = perfect match.">Final Score</th>
         <th title="Total number of codon-level mutations versus the wild-type sequence.">Mutations</th>
-        <th title="Baseline-corrected activity score: DNA yield normalised by protein yield. Higher = more active.">Activity Score</th>
+        <th title="Log2 fold change of DNA yield normalised by protein yield (baseline-corrected).">Activity Score</th>
       </tr>
     </thead>
     <tbody>
       {% for row in rows %}
       <tr>
-        <td>{{ row.generation }}</td>
+        <td><strong>{{ row.generation }}</strong></td>
         <td>{{ row.orf_start if row.orf_start is not none else '—' }}</td>
         <td>{{ row.orf_end if row.orf_end is not none else '—' }}</td>
         <td>{{ row.orf_protein_len if row.orf_protein_len is not none else '—' }}</td>
@@ -131,7 +162,7 @@
                 <div class="score-bar-fill {% if row.orf_final >= 0.95 %}high{% endif %}"
                      style="width:{{ (row.orf_final * 100)|int }}%"></div>
               </div>
-              {{ "%.3f"|format(row.orf_final) }}
+              <span>{{ "%.3f"|format(row.orf_final) }}</span>
             </div>
           {% else %}—{% endif %}
         </td>
@@ -155,10 +186,12 @@
   </table>
   </div>
   {% else %}
-  <p>No variants found for this experiment.</p>
+  <div style="text-align:center; padding:3rem 1rem; color:#9ca3af;">
+    <p style="font-size:1.1rem;">No variants found for this experiment.</p>
+  </div>
   {% endif %}
 
-  <a href="{{ url_for('home.dashboard') }}" style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">← Back to Dashboard</a>
+  <a href="{{ url_for('home.dashboard') }}" style="display:inline-block; margin-top:1.5rem; color:#2563eb; font-size:0.97rem; font-weight:500;">← Back to Dashboard</a>
 </div>
 
 {% endblock %}
