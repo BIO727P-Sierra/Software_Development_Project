@@ -87,6 +87,17 @@
   </div>
   {% endif %}
 
+  <div style="margin-bottom:1rem;">
+    <form method="POST" action="{{ url_for('past_experiments.save_experiment', experiment_id=exp.experiment_id) }}" style="display:inline;">
+      <input type="hidden" name="next" value="{{ request.url }}">
+      <button type="submit"
+        style="padding:0.5rem 0.9rem; background:#16a34a; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:0.85rem; font-weight:600;">
+        Save Experiment
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
   <p style="color:#555; font-size:0.9rem; margin-bottom:0.75rem;">
     Analysis complete. Use the options below to explore your results — view the top performing variants, visualise the activity landscape across sequence space, or track how activity changes across generations.
   </p>
@@ -97,10 +108,12 @@
     <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}">Activity Score per Generation</a>
   </div>
 
-  <h2 style="font-size:1rem; font-weight:700; margin-bottom:0.3rem;">ORF Analysis Results</h2>
-  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:0.75rem;">
-    Each row is one plasmid variant. The portal identifies the best-matching open reading frame within each plasmid and scores it against the wild-type protein. Hover over a column header for more detail.
-  </p>
+    <div style="margin-bottom:1rem;">
+    <a href="{{ url_for('analysis.activity_per_generation_graph', experiment_id=exp.experiment_id) }}"
+       style="display:inline-block; padding:0.5rem 0.9rem; background:#2563eb; color:#fff; border-radius:6px; text-decoration:none; font-size:0.85rem; font-weight:600;">
+      View Activity Score per Generation
+    </a>
+  </div>
 
   {% if rows %}
   <div class="portal-table-wrap">

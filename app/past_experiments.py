@@ -92,3 +92,25 @@ def rename_experiment(experiment_id):
     db.commit()
     flash(f'Experiment renamed to "{new_name}".')
     return redirect(request.referrer or url_for("past_experiments.list_experiments"))
+
+
+@bp.route("/delete/<int:experiment_id>", methods=["POST"])
+@login_required
+def delete_experiment(experiment_id):
+    """Permanently delete an experiment and all its variants/measurements."""
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT user_id FROM experiments WHERE experiment_id = %s",
+            (experiment_id,),
+        )
+        row = cur.fetchone()
+
+    if row is None or row["user_id"] != current_user.id:
+        abort(403)
+
+    with db.cursor() as cur:
+        cur.execute("DELETE FROM experiments WHERE experiment_id = %s", (experiment_id,))
+    db.commit()
+    flash("Experiment deleted.")
+    return redirect(url_for("past_experiments.list_experiments"))

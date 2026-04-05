@@ -77,8 +77,8 @@
         <th title="Variant ID of the parent from which this variant was derived.">Parent</th>
         <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
         <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
-        <th title="Unified activity score (log2 DNA fold change normalised by protein fold change).">Activity Score</th>
-        <th title="Total number of mutations compared to the wild-type sequence.">Mutation Total</th>
+        <th title="Unified activity score (log2 of DNA fold change divided by protein fold-change).">Activity Score</th>
+        <th title="Total number of mutations compared to the Wild Type sequence.">Mutation Total</th>
       </tr>
     </thead>
     <tbody>
@@ -90,32 +90,21 @@
         <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.dna_yield) if row.dna_yield is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.protein_yield) if row.protein_yield is not none else '—' }}</td>
-        <td>
-          {% if row.activity_score is not none %}
-            <span class="activity-pill {% if row.activity_score > 1 %}high{% endif %}">{{ "%.4f"|format(row.activity_score) }}</span>
-          {% else %}
-            <span class="activity-pill none">—</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if row.mutation_total is not none %}
-            <span class="mut-badge {% if row.mutation_total == 0 %}zero{% endif %}">{{ row.mutation_total }}</span>
-          {% else %}—{% endif %}
-        </td>
+        <td>{{ "%.4f"|format(row.activity_score) if row.activity_score is not none else '—' }}</td>
+        <td>{{ row.mutation_total if row.mutation_total is not none else '—' }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
   </div>
-
+  
+  <!-- START of Optional Mutation Fingerprint Section underneath top 10 performance table-->
   <hr style="margin: 2rem 0 1rem;">
-  <h3 style="margin-bottom:0.35rem;">Mutation Fingerprint</h3>
-  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1rem;">
-    The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each colour-coded marker indicates the generation in which that mutation was introduced during directed evolution.
-  </p>
+  <h3>Mutation Fingerprint</h3>
+  <p style="color:black; font-size:1rem; margin:0.35rem 0 1rem;"> The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each marker indicate by generation in which that mutation was introduced during directed evolution. </p>
 
-  <label for="variant-select" style="font-weight:600; font-size:0.9rem;">Choose a variant:</label>
-  <select id="variant-select" style="margin-left:0.5rem; padding:0.3rem 0.5rem; border:1px solid #d1d5db; border-radius:4px; font-size:0.9rem;">
+  <label for="variant-select">Choose a variant:</label>
+  <select id="variant-select">
     {% for row in rows %}
       <option value="{{ row.variant_id }}">
         Variant ID {{ row.variant_id }} (Gen {{ row.generation }})
@@ -123,12 +112,11 @@
     {% endfor %}
   </select>
 
-  <button type="button" onclick="loadFingerprint()"
-    style="margin-left:0.5rem; padding:0.3rem 0.9rem; background:#2563eb; color:#fff; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">
-    Show Fingerprint
+  <button type="button" onclick="loadFingerprint()" style="margin-left: 10px;">
+    Show fingerprint
   </button>
 
-  <div id="fingerprint-container" style="margin-top:1.25rem;">
+  <div id="fingerprint-container" style="margin-top: 20px;">
     <img id="fingerprint-img" style="max-width:100%;" alt="Mutation fingerprint plot">
   </div>
 
@@ -143,6 +131,10 @@
   }
   window.addEventListener('load', loadFingerprint);
   </script>
+  
+  <!-- END of Optional Mutation Fingerprint Visualisation Section-->
+  
+  
 
   {% else %}
   <p>No scored variants found for this experiment.</p>
