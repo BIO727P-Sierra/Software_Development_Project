@@ -37,7 +37,7 @@
       </div>
 
       <form method="POST" action="{{ url_for('analysis.run_step1_experiment', experiment_id=experiment_id) }}" style="margin-top:1.25rem;">
-        <button type="submit" class="btn btn-primary">Run Step 1 ORF Analysis →</button>
+        <button type="submit" class="btn btn-primary">Start Analysis →</button>
       </form>
 
     {% else %}
@@ -45,4 +45,43 @@
     {% endif %}
   {% endif %}
 </div>
+
+<div id="loadingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:white; padding:30px; border-radius:12px; text-align:center; box-shadow:0 6px 25px rgba(0,0,0,0.25);max-width:300px">
+    <p style="font-size:1.2rem; margin-bottom:10px;">
+      Starting analysis...
+    </p>
+    <div style="width:30px; height:30px; border:4px solid #ccc; border-top: #333; border-radius:50%; margin:10px auto; animation: spin 1s linear infinite;">
+    </div>
+    <p style="color:#555;">
+      Preparing your results. Please wait. 
+    </p>
+  </div>
+</div>
+
+<style>
+@keyframes spin{
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+<script>
+  function handleSubmit(form) {
+    const modal = document.getElementById("loadingModal");
+    modal.style.display="flex";
+
+    const btn=form.querySelector("button");
+    btn.disabled=true;
+    btn.innerText="Starting...";
+
+    setTimeout(() => {
+      form.submit();
+    }, 1000);
+
+    return false;
+
+  }
+</script>
+
 {% endblock %}

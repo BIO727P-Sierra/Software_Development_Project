@@ -2,6 +2,42 @@
 {% block title %}Top 10 Performing Variants – {{ exp.experiment_name }}{% endblock %}
 {% block content %}
 
+<style>
+  .portal-table-wrap { overflow-x: auto; }
+  .portal-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 0.83rem;
+  }
+  .portal-table th, .portal-table td {
+    padding: 0.45rem 0.65rem;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+  }
+  .portal-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    cursor: default;
+  }
+  .portal-table tbody tr:hover td { background: #f8fafc; }
+
+  .mut-badge {
+    display: inline-block; padding: 0.1rem 0.5rem;
+    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    background: #ede9fe; color: #5b21b6;
+  }
+  .mut-badge.zero { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+
+  .activity-pill {
+    display: inline-block; padding: 0.1rem 0.5rem;
+    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    background: #fef3c7; color: #92400e;
+  }
+  .activity-pill.high { background: #d1fae5; color: #065f46; }
+  .activity-pill.none { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+</style>
+
 <div class="card">
   <h1 style="margin-bottom:0.25rem;">Top 10 Performing Variants</h1>
   <p style="color:#666; font-size:0.9rem; margin-bottom:1.25rem;">
@@ -26,24 +62,23 @@
     {% endif %}
   {% endif %}
 
-  <p style="margin-bottom:0.75rem; color:#6b7280; font-size:0.85rem;">
-    For more information on each column, please hover over the column label.
+  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:0.75rem;">
+    Variants ranked by activity score, highest first. Hover over a column header for more detail.
   </p>
 
   {% if rows %}
-  <div style="overflow-x:auto;">
-  <table style="width:100%; border-collapse:collapse; background:#fff; font-size:0.83rem;">
+  <div class="portal-table-wrap">
+  <table class="portal-table">
     <thead>
       <tr>
-        <th title="Unique identifier for each variant in this experiment.">Variant ID</th>
+        <th title="Unique identifier for this variant.">Variant ID</th>
         <th title="Directed evolution generation number for the variant.">Generation</th>
-        <th title="Plasmid variant index from the input dataset.">Index</th>
-        <th title="Parent variant ID (if applicable).">Parent</th>
+        <th title="Index of the plasmid variant within the experiment.">Index</th>
+        <th title="Variant ID of the parent from which this variant was derived.">Parent</th>
         <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
         <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
-        <th title="Unified activity score (DNA yield normalized by protein yield, baseline-corrected).">Activity Score</th>
-        <th title="Log10 of (Activity Score + 1) for easier readability.">Activity Score (log10)</th>
-        <th title="Total number of mutations compared to WT.">Mutation Total</th>
+        <th title="Unified activity score (log2 DNA fold change normalised by protein fold change).">Activity Score</th>
+        <th title="Total number of mutations compared to the wild-type sequence.">Mutation Total</th>
       </tr>
     </thead>
     <tbody>
@@ -55,14 +90,60 @@
         <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.dna_yield) if row.dna_yield is not none else '—' }}</td>
         <td>{{ "%.3f"|format(row.protein_yield) if row.protein_yield is not none else '—' }}</td>
-        <td>{{ "%.4f"|format(row.activity_score) if row.activity_score is not none else '—' }}</td>
-        <td>{{ "%.4f"|format(row.activity_score_log) if row.activity_score_log is not none else '—' }}</td>
-        <td>{{ row.mutation_total if row.mutation_total is not none else '—' }}</td>
+        <td>
+          {% if row.activity_score is not none %}
+            <span class="activity-pill {% if row.activity_score > 1 %}high{% endif %}">{{ "%.4f"|format(row.activity_score) }}</span>
+          {% else %}
+            <span class="activity-pill none">—</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if row.mutation_total is not none %}
+            <span class="mut-badge {% if row.mutation_total == 0 %}zero{% endif %}">{{ row.mutation_total }}</span>
+          {% else %}—{% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
   </div>
+
+  <hr style="margin: 2rem 0 1rem;">
+  <h3 style="margin-bottom:0.35rem;">Mutation Fingerprint</h3>
+  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1rem;">
+    The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each colour-coded marker indicates the generation in which that mutation was introduced during directed evolution.
+  </p>
+
+  <label for="variant-select" style="font-weight:600; font-size:0.9rem;">Choose a variant:</label>
+  <select id="variant-select" style="margin-left:0.5rem; padding:0.3rem 0.5rem; border:1px solid #d1d5db; border-radius:4px; font-size:0.9rem;">
+    {% for row in rows %}
+      <option value="{{ row.variant_id }}">
+        Variant ID {{ row.variant_id }} (Gen {{ row.generation }})
+      </option>
+    {% endfor %}
+  </select>
+
+  <button type="button" onclick="loadFingerprint()"
+    style="margin-left:0.5rem; padding:0.3rem 0.9rem; background:#2563eb; color:#fff; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">
+    Show Fingerprint
+  </button>
+
+  <div id="fingerprint-container" style="margin-top:1.25rem;">
+    <img id="fingerprint-img" style="max-width:100%;" alt="Mutation fingerprint plot">
+  </div>
+
+  <script>
+  function loadFingerprint() {
+    var variantId = document.getElementById('variant-select').value;
+    if (variantId) {
+      var img = document.getElementById('fingerprint-img');
+      img.src = "{{ url_for('fingerprint.mutation_fingerprint', variant_id=0) }}"
+                  .replace('0', variantId) + '?t=' + new Date().getTime();
+    }
+  }
+  window.addEventListener('load', loadFingerprint);
+  </script>
+
   {% else %}
   <p>No scored variants found for this experiment.</p>
   {% endif %}
@@ -73,9 +154,4 @@
   </a>
 </div>
 
-<style>
-  th, td { padding: 0.45rem 0.65rem; border: 1px solid #e5e7eb; text-align: left; }
-  th { background: #f1f5f9; font-weight: 600; }
-  tr:hover { background: #f8fafc; }
-</style>
 {% endblock %}

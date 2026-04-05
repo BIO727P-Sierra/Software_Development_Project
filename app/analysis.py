@@ -5,8 +5,9 @@ from .sequence_processor import run_step1_for_variant_row, SelectionPolicy
 from .mutation_calc import run_mutation_analysis
 from .mutation_repository import save_variant_mutations
 from .activity_score import calculate_scores_for_experiment
-import math
 from .top_performer_table import fetch_top_performers
+from collections import defaultdict
+from .generation_plot import plot_boxplot
 
 bp = Blueprint("analysis", __name__, url_prefix="/analysis")
 
@@ -24,7 +25,7 @@ def results_experiment(experiment_id: int):
     with db.cursor() as cur:
         cur.execute(
             """
-            SELECT experiment_id, experiment_name, uniprot_id
+            SELECT experiment_id, experiment_name, uniprot_id, saved_at
             FROM experiments
             WHERE experiment_id = %s
             """,
@@ -88,9 +89,6 @@ def top_performers(experiment_id: int):
             abort(404)
 
     rows = fetch_top_performers(db, experiment_id, limit=10)
-    for r in rows:
-        score = r.get("activity_score")
-        r["activity_score_log"] = math.log10(score + 1) if score is not None else None
     summary = session.get("analysis_summary")
     return render_template("analysis/top_performers.html", exp=exp, rows=rows, summary=summary)
 
@@ -165,8 +163,6 @@ def run_step1_experiment(experiment_id: int):
             mutation_results = run_mutation_analysis(
                 wt_protein=wt_protein,
                 variant_protein=out["orf_protein_sequence"],
-                wt_dna=wt_dna,
-                variant_dna=out["orf_cds_dna"],
             )
             save_variant_mutations(
                 db,
@@ -193,6 +189,40 @@ def run_step1_experiment(experiment_id: int):
 
     return redirect(url_for("analysis.results_experiment", experiment_id=experiment_id))
 
+# -----------------------------
+# Generation activity plot
+# -----------------------------
+@bp.route("results/experiment//activity_per_generation_graph/<int:experiment_id>", methods=("GET",))
+def activity_per_generation_graph(experiment_id: int):
+    """
+    Plots a box plot for min, max, mean, upper and lower quartile activity score per generation
+    Excludes activity score that are null
+    """
+
+    db = get_db()
+
+    with db.cursor() as cur:
+        cur.execute(
+            """
+            SELECT generation, activity_score
+            FROM variants
+            WHERE experiment_id = %s 
+            AND activity_score IS NOT NULL
+            AND NOT generation = 0
+            ORDER BY generation;
+            """,
+            (experiment_id,),
+        )
+        data_rows = cur.fetchall()
+
+    # Gathers data into list of dict per generation
+    ordered_data = defaultdict(list)
+    [ordered_data[d["generation"]].append(d["activity_score"]) for d in data_rows]
+
+    boxplot_url_outlier = plot_boxplot(ordered_data, True)
+    boxplot_url_nooutlier = plot_boxplot(ordered_data, False)
+
+    return render_template("analysis/generation_plot.html", boxplot_url_outlier=boxplot_url_outlier, boxplot_url_nooutlier=boxplot_url_nooutlier, exp=experiment_id)
 
 # -----------------------------
 # Internal helpers
