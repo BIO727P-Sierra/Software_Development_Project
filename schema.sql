@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS variants (
     activity_score      REAL,
     mutation_total      INTEGER,
     qc_passed           BOOLEAN DEFAULT TRUE,
-    qc_reason           TEXT,
     metadata            JSONB,
 
     CONSTRAINT fk_variant_experiment
