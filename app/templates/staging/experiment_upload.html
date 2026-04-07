@@ -1,87 +1,92 @@
 {% extends "base.html" %}
 {% block title %}Experiment Data Upload{% endblock %}
 {% block content %}
-<div class="card" style="max-width:560px; margin:0 auto;">
-  <h2 style="margin-bottom:0.5rem;">Upload Experiment Data</h2>
-  <p style="color:#555; margin-bottom:1.25rem;">Experiment ID: <strong>{{ experiment_id or "—" }}</strong></p>
+<div style="max-width:680px; margin:2rem auto;">
+  <div class="card">
+    <h2 style="margin-bottom:0.4rem;">Upload Experiment Data</h2>
+    <p style="color:#6b7280; margin-bottom:1.75rem;">
+      Experiment ID: <strong style="color:#1a1a2e;">{{ experiment_id or "—" }}</strong>
+    </p>
 
-  <form method="POST" enctype="multipart/form-data">
-    <label for="experiment_file">Experiment File (.json or .tsv)</label>
-    <input type="file" name="experiment_file" id="experiment_file" accept=".json,.tsv" required>
-    <button type="submit" class="btn btn-primary">Upload</button>
-  </form>
+    <form method="POST" enctype="multipart/form-data">
+      <label for="experiment_file">Experiment File <span style="font-weight:400; color:#9ca3af;">(.json or .tsv)</span></label>
+      <input type="file" name="experiment_file" id="experiment_file" accept=".json,.tsv" required>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
 
-  {% if experiment_feedback %}
-    <hr style="margin:1.5rem 0;">
-    {% if experiment_feedback.success %}
-      <div class="success">
-        <p style="font-weight:bold; margin-bottom:0.5rem;">✓ Upload Successful</p>
-        <p>Rows parsed: <strong>{{ experiment_feedback.rows_parsed }}</strong></p>
-        <p>Rows rejected: <strong>{{ experiment_feedback.rows_rejected }}</strong></p>
-        {% if experiment_feedback.get("inserted") is not none %}
-          <p>Inserted into DB: <strong>{{ experiment_feedback.inserted }}</strong></p>
-        {% endif %}
+    {% if experiment_feedback %}
+      <hr style="margin:1.75rem 0; border:none; border-top:1.5px solid #e5e7eb;">
+      {% if experiment_feedback.success %}
+        <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; padding:1.25rem 1.5rem; margin-bottom:1.25rem;">
+          <p class="success" style="font-weight:700; font-size:1.05rem; margin-bottom:0.75rem;">✓ Upload Successful</p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+            <div>
+              <span style="color:#6b7280; font-size:0.9rem;">Rows parsed</span>
+              <div style="font-size:1.3rem; font-weight:700; color:#166534;">{{ experiment_feedback.rows_parsed }}</div>
+            </div>
+            <div>
+              <span style="color:#6b7280; font-size:0.9rem;">Rows rejected</span>
+              <div style="font-size:1.3rem; font-weight:700; color:{% if experiment_feedback.rows_rejected > 0 %}#dc2626{% else %}#166534{% endif %};">{{ experiment_feedback.rows_rejected }}</div>
+            </div>
+            {% if experiment_feedback.get("inserted") is not none %}
+            <div>
+              <span style="color:#6b7280; font-size:0.9rem;">Inserted into DB</span>
+              <div style="font-size:1.3rem; font-weight:700; color:#166534;">{{ experiment_feedback.inserted }}</div>
+            </div>
+            {% endif %}
+          </div>
 
-        {% if experiment_feedback.rejection_details %}
-          <details style="margin-top:0.75rem;">
-            <summary>Rejected records ({{ experiment_feedback.rows_rejected }})</summary>
-            <ul style="margin-top:0.5rem; font-size:0.85rem; color:#dc2626;">
-              {% for r in experiment_feedback.rejection_details %}
-                <li>
-                  <strong>Record {{ r.row_number }}:</strong> {{ r.reason }}
-                </li>
-              {% endfor %}
-            </ul>
-          </details>
-        {% endif %}
-      </div>
+          {% if experiment_feedback.rejection_details %}
+            <details style="margin-top:1rem;">
+              <summary style="cursor:pointer; font-weight:600; color:#dc2626;">Rejected records ({{ experiment_feedback.rows_rejected }})</summary>
+              <ul style="margin-top:0.5rem; font-size:0.92rem; color:#dc2626; padding-left:1.25rem;">
+                {% for r in experiment_feedback.rejection_details %}
+                  <li style="margin-bottom:0.25rem;"><strong>Record {{ r.row_number }}:</strong> {{ r.reason }}</li>
+                {% endfor %}
+              </ul>
+            </details>
+          {% endif %}
+        </div>
 
-      <form method="POST" action="{{ url_for('analysis.run_step1_experiment', experiment_id=experiment_id) }}" style="margin-top:1.25rem;">
-        <button type="submit" class="btn btn-primary">Start Analysis →</button>
-      </form>
+        <form method="POST" action="{{ url_for('analysis.run_step1_experiment', experiment_id=experiment_id) }}" onsubmit="return handleSubmit(this);">
+          <button type="submit" class="btn btn-primary" style="font-size:1.05rem; padding:0.75rem 1.75rem;">Start Analysis →</button>
+        </form>
 
-    {% else %}
-      <p class="error" style="font-weight:bold;">✗ {{ experiment_feedback.error }}</p>
+      {% else %}
+        <div style="background:#fef2f2; border:1.5px solid #fca5a5; border-radius:8px; padding:1rem 1.25rem;">
+          <p class="error" style="font-weight:700; font-size:1.05rem;">✗ Upload Failed</p>
+          <p style="color:#991b1b; margin-top:0.25rem;">{{ experiment_feedback.error }}</p>
+        </div>
+      {% endif %}
     {% endif %}
-  {% endif %}
+  </div>
 </div>
 
-<div id="loadingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:white; padding:30px; border-radius:12px; text-align:center; box-shadow:0 6px 25px rgba(0,0,0,0.25);max-width:300px">
-    <p style="font-size:1.2rem; margin-bottom:10px;">
-      Starting analysis...
-    </p>
-    <div style="width:30px; height:30px; border:4px solid #ccc; border-top: #333; border-radius:50%; margin:10px auto; animation: spin 1s linear infinite;">
-    </div>
-    <p style="color:#555;">
-      Preparing your results. Please wait. 
-    </p>
+<!-- Loading Modal -->
+<div id="loadingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:white; padding:2.5rem 3rem; border-radius:16px; text-align:center; box-shadow:0 8px 40px rgba(0,0,0,0.25); max-width:360px; width:90%;">
+    <div style="width:48px; height:48px; border:5px solid #e5e7eb; border-top-color:#2563eb; border-radius:50%; margin:0 auto 1.25rem; animation:spin 0.8s linear infinite;"></div>
+    <p style="font-size:1.15rem; font-weight:700; margin-bottom:0.5rem; color:#1a1a2e;">Running Analysis…</p>
+    <p style="color:#6b7280; font-size:0.97rem;">Processing all variants. This may take a moment.</p>
   </div>
 </div>
 
 <style>
-@keyframes spin{
-  0% { transform: rotate(0deg); }
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 </style>
 
 <script>
-  function handleSubmit(form) {
-    const modal = document.getElementById("loadingModal");
-    modal.style.display="flex";
-
-    const btn=form.querySelector("button");
-    btn.disabled=true;
-    btn.innerText="Starting...";
-
-    setTimeout(() => {
-      form.submit();
-    }, 1000);
-
-    return false;
-
-  }
+function handleSubmit(form) {
+  document.getElementById("loadingModal").style.display = "flex";
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.innerText = "Starting…";
+  setTimeout(() => form.submit(), 300);
+  return false;
+}
 </script>
 
 {% endblock %}

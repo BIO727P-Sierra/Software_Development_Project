@@ -1,43 +1,89 @@
 {% extends "base.html" %}
 {% block title %}Review UniProt Data{% endblock %}
 {% block content %}
+
+<style>
+  .review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 700px) { .review-grid { grid-template-columns: 1fr; } }
+  .info-block { margin-bottom: 0; }
+  .info-block .label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 0.3rem;
+  }
+  .info-block .value { font-size: 1.05rem; color: #111827; font-weight: 500; }
+
+  .feature-table-wrap { overflow-y: auto; max-height: 300px; border: 1.5px solid #e5e7eb; border-radius: 8px; margin-bottom: 1.5rem; }
+  .feature-table { width: 100%; border-collapse: collapse; font-size: 0.97rem; }
+  .feature-table th {
+    background: #f1f5f9; padding: 0.65rem 1rem;
+    border-bottom: 2px solid #e2e8f0; text-align: left;
+    font-weight: 600; color: #374151; position: sticky; top: 0;
+  }
+  .feature-table td { padding: 0.6rem 1rem; border-bottom: 1px solid #e5e7eb; }
+  .feature-table tr:last-child td { border-bottom: none; }
+  .feature-table tbody tr:hover td { background: #f8fafc; }
+
+  .seq-box {
+    background: #f8fafc; border: 1.5px solid #e5e7eb; border-radius: 8px;
+    padding: 1rem 1.25rem; font-family: monospace; font-size: 0.9rem;
+    overflow-x: auto; white-space: pre-wrap; word-break: break-all;
+    max-height: 160px; overflow-y: auto; margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+</style>
+
 <div class="card">
-  <h2 style="margin-bottom:1rem;">Review UniProt Data</h2>
+  <h2 style="margin-bottom:1.5rem;">Review UniProt Data</h2>
 
-  <h3 style="font-size:1rem; margin-bottom:0.25rem;">UniProt ID</h3>
-  <p style="margin-bottom:1rem;">{{ uniprot_id }}</p>
+  <div class="review-grid">
+    <div class="info-block">
+      <div class="label">UniProt ID</div>
+      <div class="value">{{ uniprot_id }}</div>
+    </div>
+    <div class="info-block">
+      <div class="label">Protein – Organism</div>
+      <div class="value">{{ protein_name }} – {{ organism_name }}</div>
+    </div>
+  </div>
 
-  <h3 style="font-size:1rem; margin-bottom:0.25rem;">Protein - Organsim</h3>
-  <p style="margin-bottom:1rem;">{{ protein_name }} - {{ organism_name }}</p>
+  <div class="label" style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:0.5rem;">Protein Sequence (FASTA)</div>
+  <div class="seq-box">{{ aminoacid_sequence }}</div>
 
-  <h3 style="font-size:1rem; margin-bottom:0.25rem;">Protein Sequence (FASTA)</h3>
-  <pre style="background:#f8f8f8; padding:0.75rem; border:1px solid #ddd; overflow-x:auto; font-size:0.8rem; margin-bottom:1rem; white-space:pre-wrap; word-break:break-all;">{{ aminoacid_sequence }}</pre>
-
-  <h3 style="font-size:1rem; margin-bottom:0.5rem;">Feature Table</h3>
-  <div style="max-height:250px; overflow-y:auto; border:1px solid #ddd; margin-bottom:1.25rem;">
-    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+  <div class="label" style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280; margin-bottom:0.6rem;">Feature Annotations</div>
+  <div class="feature-table-wrap">
+    <table class="feature-table">
       <thead>
-        <tr style="background:#f1f5f9;">
-          <th style="padding:0.5rem; border:1px solid #d1d5db;">Feature Type</th>
-          <th style="padding:0.5rem; border:1px solid #d1d5db;">Start</th>
-          <th style="padding:0.5rem; border:1px solid #d1d5db;">End</th>
+        <tr>
+          <th>Feature Type</th>
+          <th>Start</th>
+          <th>End</th>
         </tr>
       </thead>
       <tbody>
         {% for f in features_type_location %}
         <tr>
-          <td style="padding:0.5rem; border:1px solid #d1d5db;">{{ f.feature_type }}</td>
-          <td style="padding:0.5rem; border:1px solid #d1d5db;">{{ f.start_location }}</td>
-          <td style="padding:0.5rem; border:1px solid #d1d5db;">{{ f.end_location }}</td>
+          <td>{{ f.feature_type }}</td>
+          <td>{{ f.start_location }}</td>
+          <td>{{ f.end_location }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
-  <div style="display:flex; gap:0.75rem;">
+  <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
     <a href="{{ url_for('uniprot.data_stored') }}" class="btn btn-primary">Confirm &amp; Store Data</a>
     <a href="{{ url_for('uniprot.uniprot_search') }}" class="btn btn-secondary">Go Back</a>
   </div>
 </div>
+
 {% endblock %}

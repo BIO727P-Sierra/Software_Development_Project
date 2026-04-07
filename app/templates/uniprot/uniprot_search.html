@@ -1,13 +1,18 @@
 {% extends "base.html" %}
-{% block title %}UniProt Search{% endblock %}
+{% block title %}New Experiment – UniProt Search{% endblock %}
 {% block content %}
-<div class="card" style="max-width:480px; margin:0 auto;">
-  <h2 style="margin-bottom:1.25rem;">Search UniProt Protein</h2>
-  <form method="POST">
-    {{ form.csrf_token }}
-    <label for="uniprot_id">{{ form.uniprot_id.label.text }}</label>
-    {{ form.uniprot_id(class="", id="uniprot_id", placeholder="e.g. P00533") }}
-    <button type="submit" class="btn btn-primary" style="width:100%;">{{ form.submit.label.text }}</button>
-  </form>
+<div style="max-width:600px; margin:2.5rem auto;">
+  <div class="card">
+    <h2 style="margin-bottom:0.4rem;">Search UniProt Protein</h2>
+    <p style="color:#6b7280; margin-bottom:1.75rem;">
+      Enter a UniProt accession ID to retrieve the protein sequence and feature annotations for your experiment.
+    </p>
+    <form method="POST">
+      {{ form.csrf_token }}
+      <label for="uniprot_id">{{ form.uniprot_id.label.text }}</label>
+      {{ form.uniprot_id(id="uniprot_id", placeholder="e.g. P00533", style="font-size:1.05rem; padding:0.7rem 1rem;") }}
+      <button type="submit" class="btn btn-primary" style="width:100%;">{{ form.submit.label.text }}</button>
+    </form>
+  </div>
 </div>
 {% endblock %}
