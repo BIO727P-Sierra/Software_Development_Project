@@ -40,6 +40,7 @@ def _build_styles():
     styles = {
         "title": ParagraphStyle(
             "ReportTitle",
+            leading=26,
             fontSize=22,
             fontName="Helvetica-Bold",
             textColor=WHITE,
@@ -48,6 +49,7 @@ def _build_styles():
         ),
         "subtitle": ParagraphStyle(
             "ReportSubtitle",
+            leading=12,
             fontSize=10,
             fontName="Helvetica",
             textColor=colors.HexColor("#c7d2fe"),
@@ -210,16 +212,9 @@ def generate_experiment_pdf(experiment_id: int, user_id: int) -> io.BytesIO:
     S = _build_styles()
     story = []
 
-    # ── Header banner ───────────────────────────────────────────────────────
     header_data = [
-        [
-            Paragraph("🧬  Directed Evolution Portal", S["title"]),
-        ]
-    ]
-    sub_data = [
-        [
-            Paragraph("Experiment Report", S["subtitle"]),
-        ]
+        [Paragraph("Directed Evolution Portal", S["title"])],
+        [Paragraph("Experiment Report", S["subtitle"])],
     ]
 
     header_table = Table(header_data, colWidths=[PAGE_W - 2 * MARGIN])
@@ -227,28 +222,17 @@ def generate_experiment_pdf(experiment_id: int, user_id: int) -> io.BytesIO:
         TableStyle(
             [
                 ("BACKGROUND", (0, 0), (-1, -1), NAVY),
-                ("TOPPADDING", (0, 0), (-1, -1), 14),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, 0), 14),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 4),
                 ("LEFTPADDING", (0, 0), (-1, -1), 12),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 1), (-1, 1), 0),
+                ("BOTTOMPADDING", (0, 1), (-1, 1), 14),
                 ("ROUNDEDCORNERS", [6]),
             ]
         )
     )
     story.append(header_table)
-
-    sub_table = Table(sub_data, colWidths=[PAGE_W - 2 * MARGIN])
-    sub_table.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, -1), NAVY),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
-                ("LEFTPADDING", (0, 0), (-1, -1), 12),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
-            ]
-        )
-    )
-    story.append(sub_table)
     story.append(Spacer(1, 10))
 
     # ── Experiment metadata grid ────────────────────────────────────────────
