@@ -1,12 +1,50 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<div class="card">
-  <h1 style="margin-bottom:0.5rem;">Welcome back, {{ user.email }}!</h1>
-  <p style="color:#666; margin-bottom:1.5rem;">User ID: {{ user.id }}</p>
-  <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-    <a href="{{ url_for('uniprot.uniprot_search') }}" class="btn btn-primary">Start New Experiment</a>
-    <a href="{{ url_for('past_experiments.list_experiments') }}" class="btn btn-secondary">View Past Experiments</a>
+
+<style>
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .dash-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .dash-card .icon {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 0.25rem;
+  }
+  .dash-card h3 { font-size: 1.2rem; font-weight: 700; }
+  .dash-card p  { color: #6b7280; font-size: 0.97rem; flex: 1; }
+</style>
+
+<div class="card" style="margin-bottom:1.5rem;">
+  <h1 style="margin-bottom:0.35rem;">Welcome back, {{ user.email }}!</h1>
+  <p style="color:#6b7280; font-size:1rem;">What would you like to do today?</p>
+</div>
+
+<div class="dash-grid">
+  <div class="dash-card">
+    <h3>New Experiment</h3>
+    <p>Search UniProt, upload plasmid and measurement data, then run the full ORF analysis pipeline.</p>
+    <a href="{{ url_for('uniprot.uniprot_search') }}" class="btn btn-primary" style="align-self:flex-start;">Start New Experiment</a>
+  </div>
+
+  <div class="dash-card">
+    <h3>Past Experiments</h3>
+    <p>Browse, rename, and revisit previously saved experiments and their analysis results.</p>
+    <a href="{{ url_for('past_experiments.list_experiments') }}" class="btn btn-secondary" style="align-self:flex-start;">View Past Experiments</a>
   </div>
 </div>
+
 {% endblock %}

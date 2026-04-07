@@ -8,62 +8,67 @@
     width: 100%;
     border-collapse: collapse;
     background: #fff;
-    font-size: 0.83rem;
+    font-size: 1.1rem;
   }
   .portal-table th, .portal-table td {
-    padding: 0.45rem 0.65rem;
+    padding: 0.9rem 1.3rem;
     border: 1px solid #e5e7eb;
     text-align: left;
   }
   .portal-table th {
     background: #f1f5f9;
-    font-weight: 600;
-    cursor: default;
+    font-weight: 700;
+    color: #374151;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
   .portal-table tbody tr:hover td { background: #f8fafc; }
 
   .mut-badge {
-    display: inline-block; padding: 0.1rem 0.5rem;
-    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    display: inline-block; padding: 0.25rem 0.75rem;
+    border-radius: 99px; font-size: 0.95rem; font-weight: 700;
     background: #ede9fe; color: #5b21b6;
   }
-  .mut-badge.zero { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+  .mut-badge.zero { background: #f3f4f6; color: #9ca3af; font-weight: 500; }
 
   .activity-pill {
-    display: inline-block; padding: 0.1rem 0.5rem;
-    border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+    display: inline-block; padding: 0.25rem 0.75rem;
+    border-radius: 99px; font-size: 0.95rem; font-weight: 700;
     background: #fef3c7; color: #92400e;
   }
   .activity-pill.high { background: #d1fae5; color: #065f46; }
-  .activity-pill.none { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+  .activity-pill.none { background: #f3f4f6; color: #9ca3af; font-weight: 500; }
+
+  .rank-cell { font-weight: 700; color: #6b7280; font-size: 1rem; }
+  .rank-cell.top { color: #d97706; }
 </style>
 
 <div class="card">
-  <h1 style="margin-bottom:0.25rem;">Top 10 Performing Variants</h1>
-  <p style="color:#666; font-size:0.9rem; margin-bottom:1.25rem;">
-    Experiment: {{ exp.experiment_name }} &nbsp;|&nbsp;
-    ID: {{ exp.experiment_id }} &nbsp;|&nbsp;
-    UniProt: <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank">{{ exp.uniprot_id }}</a>
+  <h1 style="margin-bottom:0.3rem;">Top 10 Performing Variants</h1>
+  <p style="color:#6b7280; margin-bottom:0.5rem;">
+    {{ exp.experiment_name }} &nbsp;·&nbsp; ID: {{ exp.experiment_id }} &nbsp;·&nbsp;
+    <a href="https://www.uniprot.org/uniprot/{{ exp.uniprot_id }}" target="_blank" style="color:#2563eb;">{{ exp.uniprot_id }}</a>
   </p>
 
   {% if summary %}
     {% if summary.error %}
-      <p style="margin-bottom:1rem; color:#dc2626; font-size:0.9rem;">
-        Analysis complete: {{ summary.processed }} variant(s) processed. Activity scoring skipped: {{ summary.error }}.
-      </p>
+      <div style="background:#fef2f2; border:1.5px solid #fca5a5; border-radius:8px; padding:0.75rem 1.25rem; margin-bottom:1.25rem;">
+        <p style="color:#dc2626; font-size:0.97rem;">Analysis complete: {{ summary.processed }} variant(s) processed. Activity scoring skipped: {{ summary.error }}</p>
+      </div>
     {% else %}
-      <p style="margin-bottom:1rem; color:#111827; font-size:0.9rem;">
-        Analysis complete: {{ summary.processed }} variant(s) processed.
-        Activity scored: {{ summary.scored }}.
-        Controls skipped: {{ summary.controls_skipped }}.
-        Missing measurements skipped: {{ summary.missing_measurements_skipped }}.
-        Low protein skipped: {{ summary.low_protein_skipped }}.
-      </p>
+      <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; padding:0.75rem 1.25rem; margin-bottom:1.25rem; display:flex; flex-wrap:wrap; gap:1.5rem;">
+        <span style="color:#166534;"><strong>{{ summary.processed }}</strong> processed</span>
+        <span style="color:#166534;"><strong>{{ summary.scored }}</strong> scored</span>
+        <span style="color:#6b7280;"><strong>{{ summary.controls_skipped }}</strong> controls skipped</span>
+        <span style="color:#6b7280;"><strong>{{ summary.missing_measurements_skipped }}</strong> missing measurements</span>
+        <span style="color:#6b7280;"><strong>{{ summary.low_protein_skipped }}</strong> low protein skipped</span>
+      </div>
     {% endif %}
   {% endif %}
 
-  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:0.75rem;">
-    Variants ranked by activity score, highest first. Hover over a column header for more detail.
+  <p style="color:#6b7280; margin-bottom:1.25rem;">
+    Variants ranked by activity score (log2 fold change), highest first.
   </p>
 
   {% if rows %}
@@ -71,20 +76,22 @@
   <table class="portal-table">
     <thead>
       <tr>
+        <th title="Rank by activity score.">#</th>
         <th title="Unique identifier for this variant.">Variant ID</th>
-        <th title="Directed evolution generation number for the variant.">Generation</th>
+        <th title="Directed evolution generation number.">Generation</th>
         <th title="Index of the plasmid variant within the experiment.">Index</th>
-        <th title="Variant ID of the parent from which this variant was derived.">Parent</th>
-        <th title="Average DNA yield across measurements for this variant.">DNA Yield</th>
-        <th title="Average protein yield across measurements for this variant.">Protein Yield</th>
-        <th title="Unified activity score (log2 DNA fold change normalised by protein fold change).">Activity Score</th>
-        <th title="Total number of mutations compared to the wild-type sequence.">Mutation Total</th>
+        <th title="Parent variant ID.">Parent</th>
+        <th title="Average DNA yield across measurements.">DNA Yield</th>
+        <th title="Average protein yield across measurements.">Protein Yield</th>
+        <th title="Log2 fold change of DNA/protein ratio vs WT baseline.">Activity Score</th>
+        <th title="Total mutations vs wild-type.">Mutation Total</th>
       </tr>
     </thead>
     <tbody>
       {% for row in rows %}
       <tr>
-        <td>{{ row.variant_id }}</td>
+        <td class="rank-cell {% if loop.index <= 3 %}top{% endif %}">{{ loop.index }}</td>
+        <td><strong>{{ row.variant_id }}</strong></td>
         <td>{{ row.generation }}</td>
         <td>{{ row.plasmid_variant_index if row.plasmid_variant_index is not none else '—' }}</td>
         <td>{{ row.parent_variant_id if row.parent_variant_id is not none else '—' }}</td>
@@ -108,28 +115,29 @@
   </table>
   </div>
 
-  <hr style="margin: 2rem 0 1rem;">
-  <h3 style="margin-bottom:0.35rem;">Mutation Fingerprint</h3>
-  <p style="color:#6b7280; font-size:0.85rem; margin-bottom:1rem;">
-    The plot shows amino acid mutations present in the top 10 performing variants and where they occur along the protein sequence. Each colour-coded marker indicates the generation in which that mutation was introduced during directed evolution.
+  <hr style="margin:2rem 0; border:none; border-top:1.5px solid #e5e7eb;">
+  <h3 style="margin-bottom:0.4rem;">Mutation Fingerprint</h3>
+  <p style="color:#6b7280; margin-bottom:1.25rem;">
+    The plot shows amino acid mutations present in the selected top variant and where they occur along the protein sequence.
   </p>
 
-  <label for="variant-select" style="font-weight:600; font-size:0.9rem;">Choose a variant:</label>
-  <select id="variant-select" style="margin-left:0.5rem; padding:0.3rem 0.5rem; border:1px solid #d1d5db; border-radius:4px; font-size:0.9rem;">
-    {% for row in rows %}
-      <option value="{{ row.variant_id }}">
-        Variant ID {{ row.variant_id }} (Gen {{ row.generation }})
-      </option>
-    {% endfor %}
-  </select>
+  <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+    <label for="variant-select" style="font-weight:600; margin-bottom:0;">Choose a variant:</label>
+    <select id="variant-select" style="padding:0.55rem 0.85rem; border:1.5px solid #d1d5db; border-radius:8px; font-size:1rem; background:#fafafa;">
+      {% for row in rows %}
+        <option value="{{ row.variant_id }}">
+          Variant {{ row.variant_id }} – Gen {{ row.generation }} (score: {{ "%.3f"|format(row.activity_score) if row.activity_score is not none else '—' }})
+        </option>
+      {% endfor %}
+    </select>
+    <button type="button" onclick="loadFingerprint()"
+      class="btn btn-primary">
+      Show Fingerprint
+    </button>
+  </div>
 
-  <button type="button" onclick="loadFingerprint()"
-    style="margin-left:0.5rem; padding:0.3rem 0.9rem; background:#2563eb; color:#fff; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">
-    Show Fingerprint
-  </button>
-
-  <div id="fingerprint-container" style="margin-top:1.25rem;">
-    <img id="fingerprint-img" style="max-width:100%;" alt="Mutation fingerprint plot">
+  <div id="fingerprint-container">
+    <img id="fingerprint-img" style="max-width:100%; border-radius:8px;" alt="Mutation fingerprint plot">
   </div>
 
   <script>
@@ -145,11 +153,13 @@
   </script>
 
   {% else %}
-  <p>No scored variants found for this experiment.</p>
+  <div style="text-align:center; padding:3rem 1rem; color:#9ca3af;">
+    <p style="font-size:1.1rem;">No scored variants found for this experiment.</p>
+  </div>
   {% endif %}
 
   <a href="{{ url_for('analysis.results_experiment', experiment_id=exp.experiment_id) }}"
-     style="display:inline-block; margin-top:1.25rem; color:#2563eb; font-size:0.9rem;">
+     style="display:inline-block; margin-top:1.5rem; color:#2563eb; font-size:0.97rem; font-weight:500;">
     ← Back to Results
   </a>
 </div>
