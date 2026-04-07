@@ -126,7 +126,7 @@
     <select id="variant-select" style="padding:0.55rem 0.85rem; border:1.5px solid #d1d5db; border-radius:8px; font-size:1rem; background:#fafafa;">
       {% for row in rows %}
         <option value="{{ row.variant_id }}">
-          Variant {{ row.variant_id }} – Gen {{ row.generation }} (score: {{ "%.3f"|format(row.activity_score) if row.activity_score is not none else '—' }})
+          Variant {{ row.variant_id }} (score: {{ "%.3f"|format(row.activity_score) if row.activity_score is not none else '—' }})
         </option>
       {% endfor %}
     </select>

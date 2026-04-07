@@ -1,5 +1,4 @@
 import io
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -233,7 +232,7 @@ def finger_print_plot(variant_id):
     ax.set_yticks([])
     ax.set_xlabel("Amino acid position")
     ax.set_title(
-        f"Mutation fingerprint – Variant ID {selected_variant['variant_id']}"
+        f"Mutation fingerprint – Variant ID {selected_variant['variant_id']}", pad = 20
     )
 
     legend_elements = [
@@ -249,9 +248,14 @@ def finger_print_plot(variant_id):
         )
         for g in unique_gens
     ]
-    ax.legend(handles=legend_elements, loc="upper right", title="Introduced in")
-
+    ax.legend(handles=legend_elements, loc= "upper center", title="Lineage Generations", bbox_to_anchor=(0.5, -0.35), ncol = 3,)
+    
     for spine in ["left", "right", "top"]:
         ax.spines[spine].set_visible(False)
+    
+    fig.tight_layout()
+
+
+
 
     return fig
