@@ -1,8 +1,11 @@
 import os
+
 from flask import Flask
 from flask_login import LoginManager
-from .db import get_db, init_app as db_init_app
 from flask_session import Session
+
+from .db import get_db
+from .db import init_app as db_init_app
 
 
 def create_app(test_config=None):
@@ -11,7 +14,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret-change-me"),
         DATABASE_URL=os.environ.get("DATABASE_URL"),
-        SESSION_TYPE="filesystem"
+        SESSION_TYPE="filesystem",
     )
 
     if test_config is not None:
@@ -22,7 +25,7 @@ def create_app(test_config=None):
 
     # ── Initialise session ────────────────────────────────────
     Session(app)
-    
+
     # ── Flask-Login ───────────────────────────────────────────
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
@@ -39,7 +42,18 @@ def create_app(test_config=None):
         return User(row["id"], row["email"]) if row else None
 
     # ── Blueprints ────────────────────────────────────────────
-    from . import auth, home, uniprot, FASTA_upload, experiment_upload, analysis, activity_landscape_vis, Mutation_Fingerprinting_Vis, past_experiments
+    from . import (
+        FASTA_upload,
+        Mutation_Fingerprinting_Vis,
+        activity_landscape_vis,
+        analysis,
+        auth,
+        experiment_upload,
+        home,
+        past_experiments,
+        report,
+        uniprot,
+    )
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(home.bp)
@@ -50,6 +64,6 @@ def create_app(test_config=None):
     app.register_blueprint(Mutation_Fingerprinting_Vis.fingerprint_bp)
     app.register_blueprint(activity_landscape_vis.bp)
     app.register_blueprint(past_experiments.bp)
-    
+    app.register_blueprint(report.bp)
 
     return app

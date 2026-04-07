@@ -1,5 +1,15 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, abort, jsonify
-from flask_login import login_required, current_user
+from flask import (
+    Blueprint,
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from flask_login import current_user, login_required
+
 from .db import get_db
 
 bp = Blueprint("past_experiments", __name__, url_prefix="/experiments")
@@ -78,11 +88,15 @@ def rename_experiment(experiment_id):
     new_name = request.form.get("new_name", "").strip()
     if not new_name:
         flash("Experiment name cannot be empty.")
-        return redirect(request.referrer or url_for("past_experiments.list_experiments"))
+        return redirect(
+            request.referrer or url_for("past_experiments.list_experiments")
+        )
 
     if len(new_name) > 255:
         flash("Experiment name is too long (max 255 characters).")
-        return redirect(request.referrer or url_for("past_experiments.list_experiments"))
+        return redirect(
+            request.referrer or url_for("past_experiments.list_experiments")
+        )
 
     with db.cursor() as cur:
         cur.execute(
@@ -92,3 +106,27 @@ def rename_experiment(experiment_id):
     db.commit()
     flash(f'Experiment renamed to "{new_name}".')
     return redirect(request.referrer or url_for("past_experiments.list_experiments"))
+
+
+@bp.route("/delete/<int:experiment_id>", methods=["POST"])
+@login_required
+def delete_experiment(experiment_id):
+    """Permanently delete an experiment and all its variants/measurements."""
+    db = get_db()
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT user_id FROM experiments WHERE experiment_id = %s",
+            (experiment_id,),
+        )
+        row = cur.fetchone()
+
+    if row is None or row["user_id"] != current_user.id:
+        abort(403)
+
+    with db.cursor() as cur:
+        cur.execute(
+            "DELETE FROM experiments WHERE experiment_id = %s", (experiment_id,)
+        )
+    db.commit()
+    flash("Experiment deleted.")
+    return redirect(url_for("past_experiments.list_experiments"))
