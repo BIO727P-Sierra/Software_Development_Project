@@ -197,21 +197,6 @@ Managed via `schema.sql` (auto-applied on first run):
 
 ---
 
-## Test Data
-
-Located in `Example_Data/`:
-
-- **Protein:** GFP (UniProt P42212)  
-- **Vector:** pET-28a  
-- **Variants:** 10 mutants with known mutations  
-
-Includes:
-- FASTA plasmid file  
-- TSV & JSON experiment datasets  
-- Expected mutation outputs  
-
----
-
 ## File Format Reference
 
 ### Plasmid FASTA
