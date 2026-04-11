@@ -64,6 +64,11 @@ nav:
     - "Step 2: Plasmid Upload": pipeline/plasmid-upload.md
     - "Step 3: Experiment Data Upload": pipeline/experiment-upload.md
     - "Step 4: ORF Analysis": pipeline/orf-analysis.md
+    - "Step 5: Mutation Calling": pipeline/mutation-calling.md
+    - "Step 6: Activity Score": pipeline/activity-score.md
+    - Visualisations: pipeline/visualisations.md
+    - Experiment History: pipeline/experiment-history.md
   - Reference:
     - Database Schema: reference/database-schema.md
     - File Formats: reference/file-formats.md
+    - Test Data: reference/test-data.md
