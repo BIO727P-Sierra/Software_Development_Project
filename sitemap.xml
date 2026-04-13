@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/getting-started/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/getting-started/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/activity-score/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/activity-score/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/experiment-history/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/experiment-history/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/experiment-upload/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/experiment-upload/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/mutation-calling/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/mutation-calling/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/orf-analysis/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/orf-analysis/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/overview/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/overview/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/plasmid-upload/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/plasmid-upload/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/uniprot/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/uniprot/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/visualisations/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/pipeline/visualisations/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/reference/database-schema/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/reference/database-schema/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/reference/file-formats/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/reference/file-formats/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
     <url>
-         <loc>https://your-org.github.io/directed-evolution-portal/reference/test-data/</loc>
+         <loc>https://bio727p-sierra.github.io/Software_Development_Project/reference/test-data/</loc>
          <lastmod>2026-04-13</lastmod>
     </url>
 </urlset>
