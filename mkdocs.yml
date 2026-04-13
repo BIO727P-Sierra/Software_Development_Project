@@ -1,8 +1,8 @@
 site_name: Directed Evolution Portal
 site_description: Documentation for the Directed Evolution Monitoring Portal — track and analyse protein engineering experiments from plasmid upload through ORF analysis.
-site_url: https://your-org.github.io/directed-evolution-portal
-repo_url: https://github.com/your-org/directed-evolution-portal
-repo_name: directed-evolution-portal
+site_url: https://bio727p-sierra.github.io/Software_Development_Project/
+repo_url: https://github.com/BIO727P-Sierra/Software_Development_Project
+repo_name: Software_Development_Project
 
 theme:
   name: material
