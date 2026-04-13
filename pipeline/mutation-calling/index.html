@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://your-org.github.io/directed-evolution-portal/pipeline/experiment-upload/">
+        <link rel="canonical" href="https://your-org.github.io/directed-evolution-portal/pipeline/mutation-calling/">
       
       
-        <link rel="prev" href="../plasmid-upload/">
+        <link rel="prev" href="../orf-analysis/">
       
       
-        <link rel="next" href="../orf-analysis/">
+        <link rel="next" href="../activity-score/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Step 3: Experiment Data Upload - Directed Evolution Portal</title>
+        <title>Step 5: Mutation Calling - Directed Evolution Portal</title>
       
     
     
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#step-3-experiment-data-upload" class="md-skip">
+        <a href="#step-5-mutation-calling" class="md-skip">
           Skip to content
         </a>
       
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Step 3: Experiment Data Upload
+              Step 5: Mutation Calling
             
           </span>
         </div>
@@ -543,6 +543,62 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiment-upload/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 3: Experiment Data Upload
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orf-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 4: ORF Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -562,7 +618,7 @@
   <span class="md-ellipsis">
     
   
-    Step 3: Experiment Data Upload
+    Step 5: Mutation Calling
   
 
     
@@ -580,7 +636,7 @@
   <span class="md-ellipsis">
     
   
-    Step 3: Experiment Data Upload
+    Step 5: Mutation Calling
   
 
     
@@ -625,6 +681,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="For scientists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#running-mutation-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running mutation calling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interpreting-mutation-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpreting mutation types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -651,10 +735,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#processing-pipeline" class="md-nav__link">
+  <a href="#mutation-calling-logic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processing pipeline
+        Mutation calling logic
       
     </span>
   </a>
@@ -662,10 +746,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parsing-parse_datapy" class="md-nav__link">
+  <a href="#walking-the-alignment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parsing (parse_data.py)
+        Walking the alignment
       
     </span>
   </a>
@@ -673,10 +757,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#qc-validation-qcpy" class="md-nav__link">
+  <a href="#return-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QC validation (qc.py)
+        Return structure
       
     </span>
   </a>
@@ -684,10 +768,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-insertion-insert_variants" class="md-nav__link">
+  <a href="#database-write" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database insertion (insert_variants)
+        Database write
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-the-analysis-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with the analysis pipeline
       
     </span>
   </a>
@@ -714,62 +809,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../orf-analysis/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 4: ORF Analysis
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../mutation-calling/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Step 5: Mutation Calling
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1055,6 +1094,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="For scientists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#running-mutation-calling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running mutation calling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interpreting-mutation-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpreting mutation types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1081,10 +1148,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#processing-pipeline" class="md-nav__link">
+  <a href="#mutation-calling-logic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processing pipeline
+        Mutation calling logic
       
     </span>
   </a>
@@ -1092,10 +1159,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parsing-parse_datapy" class="md-nav__link">
+  <a href="#walking-the-alignment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parsing (parse_data.py)
+        Walking the alignment
       
     </span>
   </a>
@@ -1103,10 +1170,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#qc-validation-qcpy" class="md-nav__link">
+  <a href="#return-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        QC validation (qc.py)
+        Return structure
       
     </span>
   </a>
@@ -1114,10 +1181,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-insertion-insert_variants" class="md-nav__link">
+  <a href="#database-write" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database insertion (insert_variants)
+        Database write
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-the-analysis-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with the analysis pipeline
       
     </span>
   </a>
@@ -1160,34 +1238,49 @@
   
 
 
-<h1 id="step-3-experiment-data-upload">Step 3: Experiment Data Upload<a class="headerlink" href="#step-3-experiment-data-upload" title="Permanent link">&para;</a></h1>
+<h1 id="step-5-mutation-calling">Step 5: Mutation Calling<a class="headerlink" href="#step-5-mutation-calling" title="Permanent link">&para;</a></h1>
 <h2 id="what-this-step-does">What this step does<a class="headerlink" href="#what-this-step-does" title="Permanent link">&para;</a></h2>
-<p>With the plasmid validated, you can now upload the <strong>variant sequencing data</strong> from your directed evolution run. Each row in the upload file represents one plasmid variant — including its DNA sequence, yield measurements, and generation metadata.</p>
-<p>The portal parses and validates the file, rejects incomplete records, and inserts the valid variants into the database ready for ORF analysis.</p>
+<p>Following ORF detection, mutation calling is executed automatically for each variant that has a successfully identified ORF. The translated ORF protein sequence is aligned against the WT reference protein using global pairwise alignment, and every position where the two sequences differ is classified and recorded in the <code>mutations</code> table. The variant record is also updated with the total mutation count.</p>
 <hr />
 <h2 id="for-scientists">For scientists<a class="headerlink" href="#for-scientists" title="Permanent link">&para;</a></h2>
-<ol>
-<li>After plasmid validation, click <strong>Proceed to Experiment Data Upload</strong></li>
-<li>Upload your variant data file (<code>.json</code> or <code>.tsv</code>)</li>
-<li>The portal reports how many records were accepted and rejected</li>
-<li>Rejected records are listed with the reason (e.g. missing DNA sequence)</li>
-<li>Once uploaded, click <strong>Run Step 1 ORF Analysis</strong> to proceed</li>
-</ol>
-<div class="admonition tip">
-<p class="admonition-title">What to include in your file</p>
-<p>At minimum, each variant needs:</p>
-<ul>
-<li>The full assembled plasmid DNA sequence</li>
-<li>The generation number (which round of evolution)</li>
-<li>A unique plasmid variant index</li>
-<li>A DNA yield measurement</li>
-</ul>
-<p>Optional but useful: protein sequence, protein yield, parent variant reference.</p>
+<h3 id="running-mutation-calling">Running mutation calling<a class="headerlink" href="#running-mutation-calling" title="Permanent link">&para;</a></h3>
+<p>Mutation calling is triggered automatically as part of the Analysis run — no additional user action is required. Results are visible in the experiment results table via the <strong>Mutation Total</strong> column and form the basis of the Mutation Fingerprint visualisation described in <a href="../visualisations/">Visualisations</a>.</p>
+<h3 id="interpreting-mutation-types">Interpreting mutation types<a class="headerlink" href="#interpreting-mutation-types" title="Permanent link">&para;</a></h3>
+<p>Each individual mutation is classified into one of four categories:</p>
+<table>
+<thead>
+<tr>
+<th>Mutation type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>missense</code></td>
+<td>WT and variant residues differ (both are standard amino acids)</td>
+</tr>
+<tr>
+<td><code>nonsense</code></td>
+<td>Variant residue is a stop codon (<code>*</code>), producing a truncated protein</td>
+</tr>
+<tr>
+<td><code>insertion</code></td>
+<td>Variant has a residue where the WT has a gap</td>
+</tr>
+<tr>
+<td><code>deletion</code></td>
+<td>WT has a residue where the variant has a gap</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Silent mutations are not detected</p>
+<p>Because the comparison operates at the protein level rather than the codon level, synonymous (silent) mutations — where the DNA codon changes but the encoded amino acid does not — are <strong>not</strong> detected by this function. Synonymous changes are invisible to protein-level alignment by definition.</p>
 </div>
-<p>See <a href="../../reference/file-formats/">File Formats</a> for exact column names and a template.</p>
 <hr />
 <h2 id="for-developers">For developers<a class="headerlink" href="#for-developers" title="Permanent link">&para;</a></h2>
 <h3 id="route">Route<a class="headerlink" href="#route" title="Permanent link">&para;</a></h3>
+<p>Mutation calling is triggered internally within the analysis route:</p>
 <table>
 <thead>
 <tr>
@@ -1198,113 +1291,78 @@
 </thead>
 <tbody>
 <tr>
-<td>GET / POST</td>
-<td><code>/experiment_upload/</code></td>
-<td><code>experiment_upload.experiment_upload</code></td>
+<td><code>POST</code></td>
+<td><code>/analysis/step1/run_experiment/&lt;experiment_id&gt;</code></td>
+<td><code>analysis.run_step1_experiment</code></td>
 </tr>
 </tbody>
 </table>
-<h3 id="processing-pipeline">Processing pipeline<a class="headerlink" href="#processing-pipeline" title="Permanent link">&para;</a></h3>
-<pre class="mermaid"><code>flowchart TD
-    A["📁 Upload file\n.json or .tsv"]
-
-    subgraph PARSE["parse_data.py"]
-        B["load_file()\nDetects extension → routes to\nload_jsonfile() or load_tsvfile()"]
-        C["normalised_data()\nMaps raw field names to\ninternal snake_case keys"]
-        B --&gt; C
-    end
-
-    subgraph QC["qc.py"]
-        D["validate_data()\nChecks required fields\nare present and non-empty"]
-    end
-
-    E["✅ valid_records\n→ insert_variants() → DB"]
-    F["❌ rejected_records\n→ returned to template for display"]
-
-    A --&gt; PARSE --&gt; QC
-    D --&gt; E
-    D --&gt; F
-
-    style PARSE fill:#dbeafe,stroke:#2563eb,color:#000
-    style QC fill:#fce7f3,stroke:#db2777,color:#000
-    style E fill:#d1fae5,stroke:#059669,color:#000
-    style F fill:#fee2e2,stroke:#dc2626,color:#000</code></pre>
-<h3 id="parsing-parse_datapy">Parsing (<code>parse_data.py</code>)<a class="headerlink" href="#parsing-parse_datapy" title="Permanent link">&para;</a></h3>
-<p><code>load_file()</code> detects the extension and routes to either <code>load_jsonfile()</code> or <code>load_tsvfile()</code>. The TSV loader checks for required column headers before reading rows.</p>
-<p><code>normalised_data()</code> maps raw field names to internal snake_case keys:</p>
+<h3 id="mutation-calling-logic">Mutation calling logic<a class="headerlink" href="#mutation-calling-logic" title="Permanent link">&para;</a></h3>
+<p>Mutation calling is implemented in <code>mutation_calc.py</code> via the <code>run_mutation_analysis()</code> function, which takes two keyword arguments: the WT protein sequence and the variant protein sequence identified by the ORF detection step. The variant protein is globally aligned against the WT protein using Biopython's <code>Bio.Align.PairwiseAligner</code> with the same scoring parameters as the ORF detection module, ensuring consistency across the pipeline.</p>
+<div class="language-python highlight"><span class="filename">mutation_calc.py — aligner configuration</span><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">aligner</span> <span class="o">=</span> <span class="n">PairwiseAligner</span><span class="p">()</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">aligner</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;global&quot;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">aligner</span><span class="o">.</span><span class="n">match_score</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">aligner</span><span class="o">.</span><span class="n">mismatch_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">aligner</span><span class="o">.</span><span class="n">open_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">aligner</span><span class="o">.</span><span class="n">extend_gap_score</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
+</span></code></pre></div>
+<p>The <code>max_number_of_alignments</code> parameter is set to <code>1</code> to prevent a pathological case where astronomically many equally optimal alignments cause memory overflow or excessive computation time. Only the single best alignment is retrieved.</p>
+<h3 id="walking-the-alignment">Walking the alignment<a class="headerlink" href="#walking-the-alignment" title="Permanent link">&para;</a></h3>
+<p>The aligned sequences are walked column by column. A WT position counter (<code>wt_pos</code>) is maintained separately and incremented only when a non-gap residue appears in the WT alignment row. This ensures that mutation positions are reported as correct 1-based indices into the WT sequence, even when insertions or deletions shift the alignment.</p>
+<p>For each alignment column where the WT and variant residues differ, a mutation record is created and classified according to the following rules:</p>
 <table>
 <thead>
 <tr>
-<th>Raw field</th>
-<th>Internal key</th>
+<th>Condition</th>
+<th>Mutation type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>Assembled_DNA_Sequence</code></td>
-<td><code>assembled_dna_sequence</code></td>
+<td>Gap in WT, residue in variant</td>
+<td><code>insertion</code></td>
 </tr>
 <tr>
-<td><code>Directed_Evolution_Generation</code></td>
-<td><code>generation</code></td>
+<td>Gap in variant, residue in WT</td>
+<td><code>deletion</code></td>
 </tr>
 <tr>
-<td><code>DNA_Quantification_fg</code></td>
-<td><code>dna_yield</code></td>
+<td>Variant residue is a stop codon (<code>*</code>)</td>
+<td><code>nonsense</code></td>
 </tr>
 <tr>
-<td><code>Plasmid_Variant_Index</code></td>
-<td><code>plasmid_variant_index</code></td>
-</tr>
-<tr>
-<td><code>Protein_Sequence</code></td>
-<td><code>protein_sequence</code></td>
-</tr>
-<tr>
-<td><code>Protein_Quantification_pg</code></td>
-<td><code>protein_yield</code></td>
-</tr>
-<tr>
-<td><code>Parent_Plasmid_Variant</code></td>
-<td><code>parent_variant_id</code></td>
+<td>Different amino acid (not stop, not gap)</td>
+<td><code>missense</code></td>
 </tr>
 </tbody>
 </table>
-<p>Any extra columns are collected into a <code>metadata</code> dict.</p>
-<h3 id="qc-validation-qcpy">QC validation (<code>qc.py</code>)<a class="headerlink" href="#qc-validation-qcpy" title="Permanent link">&para;</a></h3>
-<p>Records are rejected if any of these fields are missing or empty:</p>
-<div class="language-python highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">qc.py — required fields</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span>
-<span class="normal"><a href="#__codelineno-0-3">3</a></span>
-<span class="normal"><a href="#__codelineno-0-4">4</a></span>
-<span class="normal"><a href="#__codelineno-0-5">5</a></span>
-<span class="normal"><a href="#__codelineno-0-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="n">qc_fields</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a>    <span class="s2">&quot;plasmid_variant_index&quot;</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a>    <span class="s2">&quot;assembled_dna_sequence&quot;</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a>    <span class="s2">&quot;generation&quot;</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>    <span class="s2">&quot;dna_yield&quot;</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="p">]</span>
-</span></code></pre></div></td></tr></table></div>
-<h3 id="database-insertion-insert_variants">Database insertion (<code>insert_variants</code>)<a class="headerlink" href="#database-insertion-insert_variants" title="Permanent link">&para;</a></h3>
-<p>For each valid record, two rows are inserted in a single transaction:</p>
-<div class="language-sql highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">SQL — variant + measurement insert</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
-<span class="normal"><a href="#__codelineno-1-2">2</a></span>
-<span class="normal"><a href="#__codelineno-1-3">3</a></span>
-<span class="normal"><a href="#__codelineno-1-4">4</a></span>
-<span class="normal"><a href="#__codelineno-1-5">5</a></span>
-<span class="normal"><a href="#__codelineno-1-6">6</a></span>
-<span class="normal"><a href="#__codelineno-1-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="hll"><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">variants</span><span class="w"> </span><span class="p">(</span><span class="n">experiment_id</span><span class="p">,</span><span class="w"> </span><span class="n">plasmid_variant_index</span><span class="p">,</span><span class="w"> </span><span class="n">generation</span><span class="p">,</span>
-</span></span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">                      </span><span class="n">assembled_dna_sequence</span><span class="p">,</span><span class="w"> </span><span class="n">protein_sequence</span><span class="p">,</span><span class="w"> </span><span class="n">qc_passed</span><span class="p">)</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="n">RETURNING</span><span class="w"> </span><span class="n">variant_id</span><span class="p">;</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">measurements</span><span class="w"> </span><span class="p">(</span><span class="n">variant_id</span><span class="p">,</span><span class="w"> </span><span class="n">dna_yield</span><span class="p">,</span><span class="w"> </span><span class="n">protein_yield</span><span class="p">,</span><span class="w"> </span><span class="n">is_control</span><span class="p">)</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">);</span>
-</span></code></pre></div></td></tr></table></div>
-<div class="admonition note">
-<p class="admonition-title">parent_variant_id</p>
-<p>The <code>parent_variant_id</code> field is stored as <code>NULL</code> at upload time. Parent-child relationships across generations are intended to be resolved in a later pipeline step.</p>
-</div>
+<h3 id="return-structure">Return structure<a class="headerlink" href="#return-structure" title="Permanent link">&para;</a></h3>
+<p>The function returns a dictionary containing the total mutation count and a list of individual mutation records:</p>
+<div class="language-python highlight"><span class="filename">mutation_calc.py — return structure</span><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="s2">&quot;mutation_total&quot;</span><span class="p">:</span> <span class="n">mutation_count</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="s2">&quot;mutations&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="p">{</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="n">wt_pos</span><span class="p">,</span>          <span class="c1"># 1-based position in WT</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>            <span class="s2">&quot;wt_residue&quot;</span><span class="p">:</span> <span class="n">wt_aa</span><span class="p">,</span>         <span class="c1"># &quot;-&quot; for insertions</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>            <span class="s2">&quot;mutant_residue&quot;</span><span class="p">:</span> <span class="n">var_aa</span><span class="p">,</span>    <span class="c1"># &quot;-&quot; for deletions</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>            <span class="s2">&quot;mutation_type&quot;</span><span class="p">:</span> <span class="n">mutation_type</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="p">},</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="o">...</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="p">],</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="database-write">Database write<a class="headerlink" href="#database-write" title="Permanent link">&para;</a></h3>
+<p>Mutation results are persisted by <code>save_variant_mutations()</code> in <code>mutation_repository.py</code>. The function first <strong>deletes</strong> any existing mutation rows for the variant to prevent duplication on re-runs, then inserts one row per mutation into the <code>mutations</code> table, and finally updates the <code>mutation_total</code> column on the variants row:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">mutations</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">variant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">mutations</span><span class="w"> </span><span class="p">(</span><span class="n">variant_id</span><span class="p">,</span><span class="w"> </span><span class="k">position</span><span class="p">,</span><span class="w"> </span><span class="n">wt_residue</span><span class="p">,</span><span class="w"> </span><span class="n">mutant_residue</span><span class="p">,</span><span class="w"> </span><span class="n">mutation_type</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1">-- Update total count on the variant</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">UPDATE</span><span class="w"> </span><span class="n">variants</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">mutation_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">variant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">%</span><span class="n">s</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="integration-with-the-analysis-pipeline">Integration with the analysis pipeline<a class="headerlink" href="#integration-with-the-analysis-pipeline" title="Permanent link">&para;</a></h3>
+<p>Mutation calling is invoked within the analysis loop in <code>analysis.py</code>, immediately after a successful ORF result is written to the database. It is only executed for variants where <code>step1_status = 'ok'</code>, ensuring that variants with failed ORF detection are skipped.</p>
 <h3 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1315,24 +1373,20 @@
 </thead>
 <tbody>
 <tr>
-<td>No file uploaded</td>
-<td><code>ValueError</code> caught, error feedback shown</td>
+<td>Variant has <code>step1_status = 'error'</code></td>
+<td>Mutation calling skipped entirely for that variant</td>
 </tr>
 <tr>
-<td>Unsupported file type</td>
-<td><code>ValueError</code> from <code>load_file</code></td>
+<td>Either protein sequence is empty or <code>None</code></td>
+<td>Function returns <code>{"mutation_total": 0, "mutations": []}</code></td>
 </tr>
 <tr>
-<td>Invalid JSON</td>
-<td><code>ValueError</code> with decode error detail</td>
+<td>No alignment produced (<code>StopIteration</code>)</td>
+<td>Function returns <code>{"mutation_total": 0, "mutations": []}</code></td>
 </tr>
 <tr>
-<td>TSV missing required columns</td>
-<td><code>ValueError</code> listing missing columns</td>
-</tr>
-<tr>
-<td>Individual row insert fails</td>
-<td>Row skipped, counted in <code>db_skipped</code></td>
+<td>Sequences differ in length</td>
+<td>Handled by global alignment via gap penalties; no error raised</td>
 </tr>
 </tbody>
 </table>

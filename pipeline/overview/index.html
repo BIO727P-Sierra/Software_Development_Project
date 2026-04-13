@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -686,6 +686,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mutation-calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 5: Mutation Calling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../activity-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 6: Activity Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualisations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../experiment-history/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment History
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -801,6 +913,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/test-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -899,21 +1039,25 @@
 
 
 <h1 id="pipeline-overview">Pipeline Overview<a class="headerlink" href="#pipeline-overview" title="Permanent link">&para;</a></h1>
-<p>The Directed Evolution Portal implements a four-step workflow that takes a researcher from a protein accession number all the way to scored ORF results for every variant in an experiment.</p>
+<p>The Directed Evolution Portal implements a multi-step workflow that takes a researcher from a protein accession number through variant upload, automated ORF detection, mutation calling, activity scoring, and final visualisations.</p>
 <hr />
 <h2 id="the-full-workflow">The full workflow<a class="headerlink" href="#the-full-workflow" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart TD
-    S1["🔍 Step 1 — UniProt Search\nEnter a UniProt accession ID\nFetches WT protein sequence + annotated features"]
-    S2["🧬 Step 2 — Plasmid Upload\nUpload the wild-type plasmid as a FASTA file\nValidates WT protein is encoded in it\nStores the plasmid DNA sequence"]
-    S3["📂 Step 3 — Experiment Data Upload\nUpload variant sequencing data as JSON or TSV\nParses, validates, and inserts variant rows\nAssociates DNA sequences, yields, generation info"]
-    S4["🔬 Step 4 — ORF Analysis\nScans each variant plasmid DNA for ORFs\nScores each ORF against the WT protein\nWrites results back to the database"]
+    S1["🔍 Step 1 — UniProt Search&lt;br/&gt;Enter a UniProt accession ID&lt;br/&gt;Fetches WT protein sequence + annotated features"]
+    S2["🧬 Step 2 — Plasmid Upload&lt;br/&gt;Upload the wild-type plasmid as a FASTA file&lt;br/&gt;Validates WT protein is encoded in it&lt;br/&gt;Stores the plasmid DNA sequence"]
+    S3["📂 Step 3 — Experiment Data Upload&lt;br/&gt;Upload variant sequencing data as JSON or TSV&lt;br/&gt;Parses, validates, and inserts variant rows&lt;br/&gt;Associates DNA sequences, yields, generation info"]
+    S4["🔬 Step 4 — ORF Analysis&lt;br/&gt;Scans each variant plasmid DNA for ORFs&lt;br/&gt;Scores each ORF against the WT protein&lt;br/&gt;Writes results back to the database"]
+    S5["🧩 Step 5 — Mutation Calling&lt;br/&gt;Aligns each variant protein to WT&lt;br/&gt;Classifies differences as missense/nonsense/indel&lt;br/&gt;Populates the mutations table"]
+    S6["📊 Step 6 — Activity Scoring&lt;br/&gt;Normalises DNA/protein yields against WT baseline&lt;br/&gt;Computes log₂ activity score per variant&lt;br/&gt;Feeds Top Performers table and visualisations"]
 
-    S1 --&gt; S2 --&gt; S3 --&gt; S4
+    S1 --&gt; S2 --&gt; S3 --&gt; S4 --&gt; S5 --&gt; S6
 
     style S1 fill:#dbeafe,stroke:#2563eb,color:#000
     style S2 fill:#d1fae5,stroke:#059669,color:#000
     style S3 fill:#fce7f3,stroke:#db2777,color:#000
-    style S4 fill:#ede9fe,stroke:#7c3aed,color:#000</code></pre>
+    style S4 fill:#ede9fe,stroke:#7c3aed,color:#000
+    style S5 fill:#fef3c7,stroke:#d97706,color:#000
+    style S6 fill:#fee2e2,stroke:#dc2626,color:#000</code></pre>
 <hr />
 <h2 id="why-this-order-matters">Why this order matters<a class="headerlink" href="#why-this-order-matters" title="Permanent link">&para;</a></h2>
 <p>Each step depends on the one before it:</p>
@@ -971,6 +1115,26 @@
 <td>4</td>
 <td>Run automated ORF analysis</td>
 <td><a href="../orf-analysis/">ORF Analysis</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Call mutations via WT protein alignment</td>
+<td><a href="../mutation-calling/">Mutation Calling</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Compute activity scores and rank variants</td>
+<td><a href="../activity-score/">Activity Score</a></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Explore results visually (box plot, fingerprint, landscape)</td>
+<td><a href="../visualisations/">Visualisations</a></td>
+</tr>
+<tr>
+<td>—</td>
+<td>Save, rename, report, or delete past experiments</td>
+<td><a href="../experiment-history/">Experiment History</a></td>
 </tr>
 </tbody>
 </table>

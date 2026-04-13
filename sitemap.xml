@@ -2,38 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/getting-started/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/activity-score/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/experiment-history/</loc>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/pipeline/experiment-upload/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/mutation-calling/</loc>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/pipeline/orf-analysis/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/pipeline/overview/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/pipeline/plasmid-upload/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/pipeline/uniprot/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://your-org.github.io/directed-evolution-portal/pipeline/visualisations/</loc>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/reference/database-schema/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://your-org.github.io/directed-evolution-portal/reference/file-formats/</loc>
-         <lastmod>2026-03-10</lastmod>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://your-org.github.io/directed-evolution-portal/reference/test-data/</loc>
+         <lastmod>2026-04-13</lastmod>
     </url>
 </urlset>

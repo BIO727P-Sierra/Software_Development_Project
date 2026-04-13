@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -420,10 +420,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
+  <a href="#system-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture overview
+        System architecture
       
     </span>
   </a>
@@ -679,6 +679,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipeline/mutation-calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 5: Mutation Calling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipeline/activity-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 6: Activity Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipeline/visualisations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pipeline/experiment-history/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment History
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -794,6 +906,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/test-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -839,10 +979,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
+  <a href="#system-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture overview
+        System architecture
       
     </span>
   </a>
@@ -892,7 +1032,7 @@
 
 
 <h1 id="directed-evolution-portal">Directed Evolution Portal<a class="headerlink" href="#directed-evolution-portal" title="Permanent link">&para;</a></h1>
-<p>The <strong>Directed Evolution Portal</strong> is a web application for tracking and analysing protein engineering experiments. It guides researchers through a structured workflow — from retrieving a reference protein from UniProt, through plasmid validation and variant data upload, to automated ORF (open reading frame) identification and scoring.</p>
+<p>The <strong>Directed Evolution Portal</strong> is a web application for tracking and analysing protein engineering experiments. It guides researchers through a structured workflow — from retrieving a reference protein from UniProt, through plasmid validation and variant data upload, to automated ORF identification, mutation calling, activity scoring, and visualisation.</p>
 <hr />
 <h2 id="what-it-does">What it does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
 <p>Directed evolution generates large libraries of protein variants by iteratively mutating a gene and selecting for improved function. This portal provides the informatics backbone for that process:</p>
@@ -901,92 +1041,12 @@
 <li><strong>Validate a plasmid</strong> by confirming the WT protein is encoded in the uploaded sequence</li>
 <li><strong>Upload variant data</strong> (DNA sequences, yields, generation metadata) from sequencing runs</li>
 <li><strong>Run ORF analysis</strong> to automatically identify the coding sequence in each variant plasmid and score it against the wild-type reference</li>
+<li><strong>Call mutations</strong> by aligning each variant protein to the WT and classifying differences</li>
+<li><strong>Compute activity scores</strong> normalising DNA/protein yields against WT baselines on a log2 scale</li>
 </ol>
 <hr />
-<h2 id="architecture-overview">Architecture overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>flowchart TB
- subgraph UI["UI Layer — Flask Templates"]
-    direction LR
-        ui1["Login / Register"]
-        ui2a["Stage — UniProt Search"]
-        ui2b["Stage — Plasmid Upload"]
-        ui3["Upload Data"]
-        ui4["Results &amp; Visualisations"]
-        ui5["My Experiments 🟡"]
-  end
- subgraph FLASK["Flask Blueprints"]
-    direction LR
-        f1["auth.py ✅"]
-        f2["uniprot.py ✅"]
-        f3["FASTA_upload.py ✅"]
-        f4["experiment_upload.py ✅"]
-        f5["analysis.py ✅"]
-        f6["visualisation.py ❌"]
-  end
- subgraph BUILT["✅ Built"]
-    direction LR
-        s1["uniprotAPI.py"]
-        s2["FASTA_parsing_logic.py"]
-        s3["parse_data.py + qc.py"]
-        s4["sequence_processor.py"]
-  end
- subgraph TODO["❌ To Build"]
-    direction LR
-        s5["mutation_caller.py"]
-        s6["activity_score.py"]
-        s7["visualisation.py"]
-  end
- subgraph SVC["Service / Logic Layer"]
-    direction LR
-        BUILT
-        TODO
-  end
- subgraph EXT["External"]
-    direction LR
-        ext1[("🌐 UniProt REST API")]
-        ext2[("📁 File Storage")]
-  end
- subgraph DB["Data Layer — PostgreSQL"]
-    direction LR
-        db1[("users")]
-        db2[("experiments")]
-        db3[("variants")]
-        db4[("measurements")]
-        db5[("mutations ❌")]
-  end
- subgraph DOCS["📖 Documentation"]
-    direction LR
-        docs1["mkdocs"]
-  end
-    User(["👤 User"]) --&gt; ui1 &amp; ui2a &amp; ui2b &amp; ui3 &amp; ui4
-    ui1 --&gt; f1
-    ui2a --&gt; f2
-    ui2b --&gt; f3
-    ui3 --&gt; f4
-    ui4 --&gt; f5 &amp; f6
-    f2 --&gt; s1
-    f3 --&gt; s2
-    f4 --&gt; s3
-    f5 --&gt; s4
-    f5 -.-&gt; s5 &amp; s6
-    f6 -.-&gt; s7
-    s1 --&gt; ext1 &amp; db2
-    s2 --&gt; ext2
-    s3 --&gt; ext2 &amp; db3 &amp; db4
-    f1 --&gt; db1
-    s4 --&gt; db3
-    s5 -.-&gt; db5
-    s6 -.-&gt; db3
-    s7 --&gt; db3 &amp; db4 &amp; db5
-
-    style BUILT fill:#d1fae5,stroke:#059669,color:#000
-    style TODO fill:#fee2e2,stroke:#dc2626,color:#000
-    style UI fill:#dbeafe,stroke:#2563eb,color:#000
-    style FLASK fill:#fce7f3,stroke:#db2777,color:#000
-    style SVC fill:#f0fdf4,stroke:#86efac,color:#000
-    style EXT fill:#fef3c7,stroke:#d97706,color:#000
-    style DB fill:#ede9fe,stroke:#7c3aed,color:#000
-    style DOCS fill:#f5f5f5,stroke:#666666,color:#000</code></pre>
+<h2 id="system-architecture">System architecture<a class="headerlink" href="#system-architecture" title="Permanent link">&para;</a></h2>
+<p><img alt="System Architecture" src="images/system-architecture.png" /></p>
 <hr />
 <h2 id="tech-stack">Tech stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
 <table>
@@ -999,23 +1059,35 @@
 <tbody>
 <tr>
 <td>Web framework</td>
-<td>Flask 3.x</td>
+<td>Flask 3.1.3</td>
 </tr>
 <tr>
 <td>Authentication</td>
 <td>Flask-Login</td>
 </tr>
 <tr>
+<td>Sessions</td>
+<td>Flask-Session (filesystem)</td>
+</tr>
+<tr>
 <td>Database</td>
 <td>PostgreSQL 16 (Docker)</td>
 </tr>
 <tr>
-<td>ORM / DB driver</td>
-<td>psycopg3</td>
+<td>DB driver</td>
+<td>psycopg 3 (dict_row cursor)</td>
 </tr>
 <tr>
 <td>Sequence analysis</td>
 <td>Biopython</td>
+</tr>
+<tr>
+<td>Visualisation</td>
+<td>Matplotlib, Plotly, scikit-learn</td>
+</tr>
+<tr>
+<td>PDF reports</td>
+<td>ReportLab</td>
 </tr>
 <tr>
 <td>Deployment</td>
@@ -1028,8 +1100,12 @@
 <ul>
 <li><a href="getting-started/">Getting Started</a> — set up and run the app in minutes</li>
 <li><a href="pipeline/overview/">Pipeline Overview</a> — understand the full experiment workflow</li>
-<li><a href="pipeline/orf-analysis/">ORF Analysis</a> — deep dive into the sequence processing engine</li>
+<li><a href="pipeline/mutation-calling/">Mutation Calling</a> — protein-level variant classification</li>
+<li><a href="pipeline/activity-score/">Activity Score</a> — log2-scaled scoring with WT baseline normalisation</li>
+<li><a href="pipeline/visualisations/">Visualisations</a> — box plot, mutation fingerprint, activity landscape</li>
+<li><a href="pipeline/experiment-history/">Experiment History</a> — save, rename, download reports</li>
 <li><a href="reference/database-schema/">Database Schema</a> — full table and column reference</li>
+<li><a href="reference/test-data/">Test Data</a> — GFP synthetic dataset for pipeline validation</li>
 </ul>
 
 

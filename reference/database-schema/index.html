@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://your-org.github.io/directed-evolution-portal/reference/database-schema/">
       
       
-        <link rel="prev" href="../../pipeline/orf-analysis/">
+        <link rel="prev" href="../../pipeline/experiment-history/">
       
       
         <link rel="next" href="../file-formats/">
@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -590,6 +590,118 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pipeline/mutation-calling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 5: Mutation Calling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pipeline/activity-score/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Step 6: Activity Score
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pipeline/visualisations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visualisations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pipeline/experiment-history/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Experiment History
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -721,10 +833,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#entity-relationship" class="md-nav__link">
+  <a href="#entity-relationship-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entity relationship
+        Entity relationship diagram
       
     </span>
   </a>
@@ -788,10 +900,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-1-orf-analysis-results" class="md-nav__link">
+  <a href="#orf-detection-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1 — ORF analysis results
+        ORF detection results
       
     </span>
   </a>
@@ -873,6 +985,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../test-data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -907,10 +1047,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#entity-relationship" class="md-nav__link">
+  <a href="#entity-relationship-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entity relationship
+        Entity relationship diagram
       
     </span>
   </a>
@@ -974,10 +1114,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-1-orf-analysis-results" class="md-nav__link">
+  <a href="#orf-detection-results" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 1 — ORF analysis results
+        ORF detection results
       
     </span>
   </a>
@@ -1043,15 +1183,10 @@
 
 
 <h1 id="database-schema">Database Schema<a class="headerlink" href="#database-schema" title="Permanent link">&para;</a></h1>
-<p>The portal uses a PostgreSQL 16 database with five tables. The schema is applied automatically from <code>schema.sql</code> on first container startup.</p>
+<p>The portal uses a PostgreSQL 16 database comprising five tables. The schema is defined in <code>schema.sql</code> and is applied automatically on first container startup.</p>
 <hr />
-<h2 id="entity-relationship">Entity relationship<a class="headerlink" href="#entity-relationship" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>users
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  └── experiments (user_id → users.id)
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        └── variants (experiment_id → experiments.experiment_id)
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>              ├── measurements (variant_id → variants.variant_id)
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>              └── mutations    (variant_id → variants.variant_id)
-</span></code></pre></div>
+<h2 id="entity-relationship-diagram">Entity relationship diagram<a class="headerlink" href="#entity-relationship-diagram" title="Permanent link">&para;</a></h2>
+<p><img alt="Database Schema" src="../../images/database-schema.png" /></p>
 <hr />
 <h2 id="users">users<a class="headerlink" href="#users" title="Permanent link">&para;</a></h2>
 <p>Stores registered user accounts.</p>
@@ -1153,11 +1288,16 @@
 <td><code>TIMESTAMP</code></td>
 <td>Experiment creation time</td>
 </tr>
+<tr>
+<td><code>saved_at</code></td>
+<td><code>TIMESTAMP</code></td>
+<td>Set when the user saves the experiment; <code>NULL</code> until saved. Only experiments with non-NULL <code>saved_at</code> appear in the Past Experiments list</td>
+</tr>
 </tbody>
 </table>
 <hr />
 <h2 id="variants">variants<a class="headerlink" href="#variants" title="Permanent link">&para;</a></h2>
-<p>One row per plasmid variant in an experiment. DNA sequences and ORF analysis results live here.</p>
+<p>One row per plasmid variant within an experiment. Stores the assembled DNA sequence, ORF detection results, and QC metadata. The table is subdivided into four logical groups of columns.</p>
 <h3 id="identity-and-lineage">Identity and lineage<a class="headerlink" href="#identity-and-lineage" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1186,7 +1326,7 @@
 <tr>
 <td><code>parent_variant_id</code></td>
 <td><code>INTEGER FK → variants.variant_id</code></td>
-<td>Parent variant (NULL until lineage resolution)</td>
+<td>Parent variant (<code>NULL</code> until lineage resolution)</td>
 </tr>
 <tr>
 <td><code>generation</code></td>
@@ -1217,8 +1357,8 @@
 </tr>
 </tbody>
 </table>
-<h3 id="step-1-orf-analysis-results">Step 1 — ORF analysis results<a class="headerlink" href="#step-1-orf-analysis-results" title="Permanent link">&para;</a></h3>
-<p>These columns are all <code>NULL</code> until ORF analysis is run.</p>
+<h3 id="orf-detection-results">ORF detection results<a class="headerlink" href="#orf-detection-results" title="Permanent link">&para;</a></h3>
+<p>All columns in this group are <code>NULL</code> until ORF detection is executed.</p>
 <table>
 <thead>
 <tr>
@@ -1303,12 +1443,12 @@
 <tr>
 <td><code>activity_score</code></td>
 <td><code>REAL</code></td>
-<td>Reserved for functional activity data</td>
+<td>Activity score computed by the scoring pipeline</td>
 </tr>
 <tr>
 <td><code>mutation_total</code></td>
 <td><code>INTEGER</code></td>
-<td>Reserved for mutation count (populated in later pipeline steps)</td>
+<td>Total mutation count populated by mutation calling</td>
 </tr>
 <tr>
 <td><code>qc_passed</code></td>
@@ -1329,7 +1469,7 @@
 </table>
 <hr />
 <h2 id="measurements">measurements<a class="headerlink" href="#measurements" title="Permanent link">&para;</a></h2>
-<p>Yield measurements associated with a variant. Each variant gets one measurement row inserted at upload time.</p>
+<p>One measurement row is inserted per variant at upload time.</p>
 <table>
 <thead>
 <tr>
@@ -1368,7 +1508,7 @@
 </table>
 <hr />
 <h2 id="mutations">mutations<a class="headerlink" href="#mutations" title="Permanent link">&para;</a></h2>
-<p>Reserved for mutation annotation (populated in future pipeline steps after ORF analysis identifies the coding sequence).</p>
+<p>Populated by <a href="../../pipeline/mutation-calling/">mutation calling</a> after ORF detection identifies the coding sequence and aligns the variant protein against the WT reference.</p>
 <table>
 <thead>
 <tr>
@@ -1406,7 +1546,7 @@
 <tr>
 <td><code>mutation_type</code></td>
 <td><code>VARCHAR(20)</code></td>
-<td>e.g. <code>'missense'</code>, <code>'synonymous'</code>, <code>'nonsense'</code></td>
+<td><code>'missense'</code>, <code>'nonsense'</code>, <code>'insertion'</code>, or <code>'deletion'</code></td>
 </tr>
 </tbody>
 </table>
