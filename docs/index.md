@@ -21,8 +21,6 @@ Directed evolution generates large libraries of protein variants by iteratively 
 
 ![System Architecture](images/system-architecture.png)
 
-*Figure 3.1.1 — System architecture of the Directed Evolution Portal, illustrating the four-layer structure of the application. The UI layer (blue) shows user-facing pages rendered from Flask templates. The route layer (pink) maps each page to its Flask blueprint module. The business logic layer (green) contains the processing modules invoked by each route. External services (yellow) include the UniProt REST API and local file storage. The database layer (purple) shows the five PostgreSQL tables. Connecting lines indicate data flow between layers.*
-
 ---
 
 ## Tech stack

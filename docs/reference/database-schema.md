@@ -8,20 +8,6 @@ The portal uses a PostgreSQL 16 database comprising five tables. The schema is d
 
 ![Database Schema](../images/database-schema.png)
 
-*Figure 4.1 — Database schema architecture. The five tables that make up the database, with lines between tables illustrating the foreign key constraints. The foreign key of one table refers to the primary key of another, creating a cascade event if the parent row is removed.*
-
----
-
-## Entity relationships
-
-```
-users
-  └── experiments (user_id → users.id)
-        └── variants (experiment_id → experiments.experiment_id)
-              ├── measurements (variant_id → variants.variant_id)
-              └── mutations    (variant_id → variants.variant_id)
-```
-
 ---
 
 ## users

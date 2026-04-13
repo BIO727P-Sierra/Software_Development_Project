@@ -152,26 +152,45 @@ docker compose logs -f app
 
 ```
 .
-├── docker-compose.yml       # Container orchestration
-├── Dockerfile               # Flask app image build
-├── schema.sql               # Database schema (auto-applied on first run)
-├── requirements.txt         # Python dependencies
-├── wsgi.py                  # Gunicorn entry point
-├── __init__.py              # Flask app factory
-├── auth.py                  # User registration & login
-├── home.py                  # Dashboard & index routes
-├── uniprot.py               # UniProt search & confirmation
-├── uniprotAPI.py            # UniProt REST API client
-├── FASTA_upload.py          # Plasmid FASTA upload & validation
-├── FASTA_parsing_logic.py   # FASTA parsing utilities
-├── experiment_upload.py     # Variant data upload (JSON/TSV)
-├── parse_data.py            # File parsing & normalisation
-├── qc.py                    # QC validation rules
-├── feedback.py              # Upload feedback formatting
-├── sequence_processor.py    # ORF discovery, scoring & selection engine
-├── analysis.py              # Analysis routes & DB write-back
-├── db.py                    # Database connection management
-└── uploads/                 # Persisted uploaded files (Docker volume)
+├── docker-compose.yml                # Container orchestration
+├── Dockerfile                        # Flask app image build
+├── schema.sql                        # Database schema (auto-applied on first run)
+├── requirements.txt                  # Python dependencies
+├── wsgi.py                           # Gunicorn entry point
+├── app/
+│   ├── __init__.py                   # Flask app factory
+│   ├── db.py                         # Database connection management
+│   ├── auth.py                       # User registration & login
+│   ├── home.py                       # Dashboard & index routes
+│   ├── uniprot.py                    # UniProt search & confirmation
+│   ├── uniprotAPI.py                 # UniProt REST API client
+│   ├── FASTA_upload.py               # Plasmid FASTA upload & validation
+│   ├── FASTA_parsing_logic.py        # FASTA parsing & six-frame translation
+│   ├── experiment_upload.py          # Variant data upload (JSON/TSV)
+│   ├── parse_data.py                 # File parsing & normalisation
+│   ├── qc.py                         # QC validation rules
+│   ├── feedback.py                   # Upload feedback formatting
+│   ├── sequence_processor.py         # ORF discovery, scoring & selection engine
+│   ├── analysis.py                   # Analysis routes & DB write-back
+│   ├── mutation_calc.py              # Protein-level mutation calling
+│   ├── mutation_repository.py        # Mutation database persistence
+│   ├── activity_score.py             # Activity score calculation & helpers
+│   ├── top_performer_table.py        # Top 10 performers query & route
+│   ├── generation_plot.py            # Generation activity box plot
+│   ├── activity_landscape_vis.py     # 3D activity landscape (Plotly)
+│   ├── Mutation_Fingerprinting_Vis.py # Mutation fingerprint plot
+│   ├── past_experiments.py           # Save, rename, delete experiments
+│   ├── report.py                     # PDF report generation (ReportLab)
+│   └── templates/                    # Jinja2 HTML templates
+│       ├── base.html
+│       ├── auth/
+│       ├── home/
+│       ├── staging/
+│       ├── uniprot/
+│       ├── analysis/
+│       ├── experiments/
+│       └── visualisation/
+└── uploads/                          # Persisted uploaded files (Docker volume)
 ```
 
 ---
