@@ -1,10 +1,18 @@
 # Database Schema
 
-The portal uses a PostgreSQL 16 database with five tables. The schema is applied automatically from `schema.sql` on first container startup.
+The portal uses a PostgreSQL 16 database comprising five tables. The schema is defined in `schema.sql` and is applied automatically on first container startup.
 
 ---
 
-## Entity relationship
+## Entity relationship diagram
+
+![Database Schema](../images/database-schema.png)
+
+*Figure 4.1 — Database schema architecture. The five tables that make up the database, with lines between tables illustrating the foreign key constraints. The foreign key of one table refers to the primary key of another, creating a cascade event if the parent row is removed.*
+
+---
+
+## Entity relationships
 
 ```
 users
@@ -46,12 +54,13 @@ One row per experiment, created at UniProt confirmation. Represents a single dir
 | `validation_note` | `TEXT` | Optional note from validation step |
 | `metadata` | `JSONB` | Reserved for future use |
 | `created_at` | `TIMESTAMP` | Experiment creation time |
+| `saved_at` | `TIMESTAMP` | Set when the user saves the experiment; `NULL` until saved. Only experiments with non-NULL `saved_at` appear in the Past Experiments list |
 
 ---
 
 ## variants
 
-One row per plasmid variant in an experiment. DNA sequences and ORF analysis results live here.
+One row per plasmid variant within an experiment. Stores the assembled DNA sequence, ORF detection results, and QC metadata. The table is subdivided into four logical groups of columns.
 
 ### Identity and lineage
 
@@ -60,7 +69,7 @@ One row per plasmid variant in an experiment. DNA sequences and ORF analysis res
 | `variant_id` | `SERIAL PK` | Auto-incrementing variant ID |
 | `experiment_id` | `INTEGER FK → experiments.experiment_id` | Parent experiment |
 | `plasmid_variant_index` | `INTEGER` | Unique index from the uploaded data file |
-| `parent_variant_id` | `INTEGER FK → variants.variant_id` | Parent variant (NULL until lineage resolution) |
+| `parent_variant_id` | `INTEGER FK → variants.variant_id` | Parent variant (`NULL` until lineage resolution) |
 | `generation` | `INTEGER NOT NULL` | Directed evolution generation number |
 
 ### Sequence data
@@ -70,9 +79,9 @@ One row per plasmid variant in an experiment. DNA sequences and ORF analysis res
 | `assembled_dna_sequence` | `TEXT NOT NULL` | Full assembled plasmid DNA sequence |
 | `protein_sequence` | `TEXT NOT NULL DEFAULT ''` | Protein sequence if provided in upload file |
 
-### Step 1 — ORF analysis results
+### ORF detection results
 
-These columns are all `NULL` until ORF analysis is run.
+All columns in this group are `NULL` until ORF detection is executed.
 
 | Column | Type | Description |
 |---|---|---|
@@ -93,8 +102,8 @@ These columns are all `NULL` until ORF analysis is run.
 
 | Column | Type | Description |
 |---|---|---|
-| `activity_score` | `REAL` | Reserved for functional activity data |
-| `mutation_total` | `INTEGER` | Reserved for mutation count (populated in later pipeline steps) |
+| `activity_score` | `REAL` | Activity score computed by the scoring pipeline |
+| `mutation_total` | `INTEGER` | Total mutation count populated by mutation calling |
 | `qc_passed` | `BOOLEAN DEFAULT TRUE` | Set to `FALSE` for records rejected by QC |
 | `qc_reason` | `TEXT` | Reason if `qc_passed = FALSE` |
 | `metadata` | `JSONB` | Extra columns from upload file not mapped to known fields |
@@ -103,7 +112,7 @@ These columns are all `NULL` until ORF analysis is run.
 
 ## measurements
 
-Yield measurements associated with a variant. Each variant gets one measurement row inserted at upload time.
+One measurement row is inserted per variant at upload time.
 
 | Column | Type | Description |
 |---|---|---|
@@ -117,7 +126,7 @@ Yield measurements associated with a variant. Each variant gets one measurement 
 
 ## mutations
 
-Reserved for mutation annotation (populated in future pipeline steps after ORF analysis identifies the coding sequence).
+Populated by [mutation calling](../pipeline/mutation-calling.md) after ORF detection identifies the coding sequence and aligns the variant protein against the WT reference.
 
 | Column | Type | Description |
 |---|---|---|
@@ -126,4 +135,4 @@ Reserved for mutation annotation (populated in future pipeline steps after ORF a
 | `position` | `INTEGER NOT NULL` | Amino acid position (1-based) |
 | `wt_residue` | `CHAR(1)` | Wild-type amino acid |
 | `mutant_residue` | `CHAR(1)` | Mutant amino acid |
-| `mutation_type` | `VARCHAR(20)` | e.g. `'missense'`, `'synonymous'`, `'nonsense'` |
+| `mutation_type` | `VARCHAR(20)` | `'missense'`, `'nonsense'`, `'insertion'`, or `'deletion'` |
